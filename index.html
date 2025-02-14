@@ -679,5 +679,34 @@
     Contact
   </a>
 </footer>
+
+<script>
+// Add this script just before the closing </body> tag
+window.onload = function() {
+  // Get the container and party columns
+  const container = document.querySelector('.container');
+  const parties = Array.from(document.querySelectorAll('.party-column'));
+  
+  // Remove existing columns from container
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+
+  // Shuffle function using Fisher-Yates algorithm
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  // Shuffle and re-append columns
+  shuffleArray(parties).forEach(party => {
+    container.appendChild(party);
+  });
+};
+</script>
+
 </body>
 </html>
