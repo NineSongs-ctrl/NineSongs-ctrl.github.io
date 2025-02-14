@@ -5,6 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ontario Election 2025 - Party Website Comparison</title>
   <style>
+    /* New Alert Box Styles */
+    .alert-box {
+      background-color: #ffeeee;
+      border: 2px solid #ff4444;
+      border-radius: 8px;
+      padding: 15px 25px;
+      margin: 0 auto 30px auto;
+      max-width: 1200px;
+      color: #cc0000;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(255, 68, 68, 0.2);
+      position: relative;
+    }
+    .alert-box::before {
+      content: "❗";
+      margin-right: 10px;
+      font-size: 1.2em;
+    }
+    .alert-box a {
+      color: #aa0000;
+      text-decoration: underline;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .alert-box a:hover {
+      color: #880000;
+    }
+
     body {
       font-family: 'Arial', sans-serif;
       background-color: #f4f4f4;
@@ -26,11 +54,6 @@
       justify-content: center;
       align-items: stretch;
     }
-    /* Removed hover effect */
-    /* .party-column:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
-    } */
     .party-header {
       display: flex;
       flex-direction: column;
@@ -169,10 +192,18 @@
     @media (max-width: 768px) {
       h1 { font-size: 2em; }
       .party-column { flex: 1 1 100%; margin-bottom: 20px; }
+      .alert-box { padding: 12px; }
     }
   </style>
 </head>
 <body>
+  <div class="alert-box">
+    <strong>URGENT ELECTION NOTICE:</strong> Ontario Election Day is February 27th, 2025! 
+    Time is running out to register to vote. Check your registration status or register now at 
+    <a href="https://www.elections.on.ca/en.html" target="_blank">Elections Ontario</a>. 
+    Deadline to register is February 20th!
+  </div>
+
   <h1>Ontario Election 2025</h1>
   <div class="container">
     <!-- Ontario NDP Column -->
