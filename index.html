@@ -5,7 +5,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ontario Election 2025 - Party Website Comparison</title>
   <style>
-    /* New Alert Box Styles */
+   
+.page-footer {
+      background-color: #2d2d2d;
+      padding: 30px 20px;
+      margin: 40px -25px -25px -25px;
+      box-shadow: inset 0 8px 12px rgba(0, 0, 0, 0.2);
+      border-top: 1px solid #404040;
+      text-align: center;
+    }
+
+    .contact-button {
+      display: inline-block;
+      background-color: #4A4A4A;
+      color: white;
+      padding: 12px 30px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      border: 1px solid #5A5A5A;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-button::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+      );
+      transition: 0.6s;
+    }
+
+    .contact-button:hover {
+      background-color: #5A5A5A;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .contact-button:hover::before {
+      left: 100%;
+    }
+
+    .contact-button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .page-footer {
+        padding: 25px 15px;
+        margin: 30px -15px -15px -15px;
+      }
+      .contact-button {
+        padding: 10px 25px;
+        font-size: 0.9em;
+      }
+    }
+
+ /* New Alert Box Styles */
     .alert-box {
       background-color: #ffeeee;
       border: 2px solid #ff4444;
@@ -607,5 +674,10 @@
       </div>
     </div>
   </div>
+<footer class="page-footer">
+  <a href="mailto:romanmarkovskiapp@gmail.com" class="contact-button">
+    Contact Us
+  </a>
+</footer>
 </body>
 </html>
