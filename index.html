@@ -22,7 +22,7 @@
       100% { background-position: 0% 50%; }
     }
     
-    /* Overlay that contains the letter */
+    /* Overlay for the open letter */
     .overlay {
       position: fixed;
       top: 0;
@@ -102,7 +102,7 @@
       50% { transform: translateY(10px); }
     }
     
-    /* Political Promise Tracker Content (hidden behind the overlay) */
+    /* Political Promise Tracker Content (initially hidden behind the overlay) */
     #tracker-content {
       margin-top: 40px;
       padding: 20px;
@@ -154,7 +154,10 @@
 
   <script>
     function hideOverlay() {
+      // Hide the overlay
       document.getElementById('overlay').classList.add('hidden');
+      // Smoothly scroll to the tracker content
+      document.getElementById('tracker-content').scrollIntoView({ behavior: 'smooth' });
     }
   </script>
 </body>
