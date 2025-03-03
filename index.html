@@ -31,10 +31,10 @@
       height: 100%;
       background: rgba(0, 0, 0, 0.9);
       color: #fff;
+      z-index: 1000;
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
       transition: opacity 0.5s ease, visibility 0.5s ease;
     }
     .overlay.hidden {
@@ -42,17 +42,32 @@
       visibility: hidden;
       pointer-events: none;
     }
+    /* Overlay content is split into two parts: scrollable letter and fixed footer */
     .overlay-content {
       width: 90%;
       max-width: 800px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      background: rgba(0, 0, 0, 0.0);
+    }
+    .letter-scroll {
+      overflow-y: auto;
+      padding: 20px;
+      background: rgba(0,0,0,0);
+      flex-grow: 1;
+    }
+    .overlay-footer {
+      padding: 10px 20px;
       text-align: center;
+      background: rgba(0,0,0,0.85);
     }
     
     /* Letter Styles */
     .letter-container {
       background: rgba(255, 255, 255, 0.9);
       color: #333;
-      padding: 40px;
+      padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
       margin-bottom: 20px;
@@ -78,7 +93,7 @@
     
     /* Continue Button & Scroll Indicator */
     .continue-btn {
-      margin-top: 20px;
+      margin-top: 10px;
       padding: 15px 30px;
       font-size: 18px;
       color: #fff;
@@ -102,7 +117,7 @@
       50% { transform: translateY(10px); }
     }
     
-    /* Political Promise Tracker Content (initially hidden behind the overlay) */
+    /* Political Promise Tracker Content */
     #tracker-content {
       margin-top: 40px;
       padding: 20px;
@@ -116,7 +131,7 @@
         padding: 20px;
       }
       .letter-container {
-        padding: 20px;
+        padding: 15px;
       }
     }
   </style>
@@ -125,23 +140,29 @@
   <!-- Overlay containing the open letter message -->
   <div class="overlay" id="overlay">
     <div class="overlay-content">
-      <div class="letter-container">
-        <h1>An Open Letter to the PC Party of Ontario</h1>
-        <p>To the PC Party of Ontario,</p>
-        <p>In a polling location, I witnessed diverse amounts of people from every background, ethnicity, gender, and religion. From the bright-eyed curiosity of children, the resolute determination of young adults casting their first ever ballot, to mothers and fathers balancing civic duty with familial love, and seniors whose wisdom spans generations, each person came driven by a passion to vote for a better tomorrow.</p>
-        <p>I witnessed acts of kindness that show the very essence of our Canadian spirit. Strangers holding doors open for one another, exchanging warm smiles and sharing hopeful words about the future. In every corner of the polling station, there was a unifying truth: each vote was not just a mark on a ballot but a testament to the enduring belief in democracy and the hope for a brighter future.</p>
-        <p>I implore you, as the custodians of our province’s destiny, to approach your tenure with unwavering integrity and transparency. The promises you made during your campaigns are not mere political talking points; they are lifelines for families striving for better education, affordable housing and cheaper groceries; for individuals yearning for accessible healthcare; for communities working toward sustainable growth; and for the marginalized desiring equitable opportunities. These commitments embody the dreams and aspirations of every Ontarian who has placed their trust in you.</p>
-        <p>So when the confetti settles and the headlines fade, remember the man who cast his vote from a hospice bed, his ballot a final act of faith. Recall the student who skipped lunch to join the line, believing that a single vote could mend their hunger. Recall the seniors that made it their day's mission to go out and cast their vote.</p>
-        <p>To you who will lead: carry these people in your very bones. Let them echo in every podium speech, every policy debate, every late night discussion. You are not merely inheriting power; you are entrusted with hope. Do not dilute it with empty rhetoric or betray it through complacency.</p>
-        <p>Be the leader who sees a parent’s silent tears at every cut to education; who hears the distant roar of wildfires in every compromise on the environment; who feels the tremor in a senior’s hand when housing becomes a luxury; who sees the young struggling with their mental and physical health due to inadequate healthcare.</p>
-        <p class="emphasis">This is your task. Be bold. Be compassionate. Be accountable. But above all, be worthy of them.</p>
-        <div class="signature">
-          <hr>
-          <p>A Concerned Citizen of Ontario</p>
+      <!-- Scrollable letter content -->
+      <div class="letter-scroll">
+        <div class="letter-container">
+          <h1>An Open Letter to the PC Party of Ontario</h1>
+          <p>To the PC Party of Ontario,</p>
+          <p>In a polling location, I witnessed diverse amounts of people from every background, ethnicity, gender, and religion. From the bright-eyed curiosity of children, the resolute determination of young adults casting their first ever ballot, to mothers and fathers balancing civic duty with familial love, and seniors whose wisdom spans generations, each person came driven by a passion to vote for a better tomorrow.</p>
+          <p>I witnessed acts of kindness that show the very essence of our Canadian spirit. Strangers holding doors open for one another, exchanging warm smiles and sharing hopeful words about the future. In every corner of the polling station, there was a unifying truth: each vote was not just a mark on a ballot but a testament to the enduring belief in democracy and the hope for a brighter future.</p>
+          <p>I implore you, as the custodians of our province’s destiny, to approach your tenure with unwavering integrity and transparency. The promises you made during your campaigns are not mere political talking points; they are lifelines for families striving for better education, affordable housing and cheaper groceries; for individuals yearning for accessible healthcare; for communities working toward sustainable growth; and for the marginalized desiring equitable opportunities. These commitments embody the dreams and aspirations of every Ontarian who has placed their trust in you.</p>
+          <p>So when the confetti settles and the headlines fade, remember the man who cast his vote from a hospice bed, his ballot a final act of faith. Recall the student who skipped lunch to join the line, believing that a single vote could mend their hunger. Recall the seniors that made it their day's mission to go out and cast their vote.</p>
+          <p>To you who will lead: carry these people in your very bones. Let them echo in every podium speech, every policy debate, every late night discussion. You are not merely inheriting power; you are entrusted with hope. Do not dilute it with empty rhetoric or betray it through complacency.</p>
+          <p>Be the leader who sees a parent’s silent tears at every cut to education; who hears the distant roar of wildfires in every compromise on the environment; who feels the tremor in a senior’s hand when housing becomes a luxury; who sees the young struggling with their mental and physical health due to inadequate healthcare.</p>
+          <p class="emphasis">This is your task. Be bold. Be compassionate. Be accountable. But above all, be worthy of them.</p>
+          <div class="signature">
+            <hr>
+            <p>A Concerned Citizen of Ontario</p>
+          </div>
         </div>
       </div>
-      <button class="continue-btn" onclick="hideOverlay()">Continue</button>
-      <div class="scroll-indicator">⬇ Scroll down to continue ⬇</div>
+      <!-- Fixed footer with Continue button and indicator -->
+      <div class="overlay-footer">
+        <button class="continue-btn" onclick="hideOverlay()">Continue</button>
+        <div class="scroll-indicator">⬇ Scroll down to continue ⬇</div>
+      </div>
     </div>
   </div>
 
@@ -154,9 +175,8 @@
 
   <script>
     function hideOverlay() {
-      // Hide the overlay
       document.getElementById('overlay').classList.add('hidden');
-      // Smoothly scroll to the tracker content
+      // Smooth scroll to the tracker content
       document.getElementById('tracker-content').scrollIntoView({ behavior: 'smooth' });
     }
   </script>
