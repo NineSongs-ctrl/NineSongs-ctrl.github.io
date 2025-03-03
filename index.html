@@ -1,169 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>An Open Letter to the PC Party of Ontario</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 40px;
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            z-index: 1000;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        .hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .overlay-content {
-            max-width: 800px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-        }
-
-        .continue-btn {
-            margin-top: 20px;
-            padding: 15px 30px;
-            font-size: 18px;
-            color: white;
-            background: #e74c3c;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .continue-btn:hover {
-            background: #c0392b;
-        }
-
-        .scroll-indicator {
-            margin-top: 20px;
-            font-size: 14px;
-            opacity: 0.7;
-            animation: bounce 1.5s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(10px); }
-        }
-
-        .letter-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .emphasis {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-
-        .signature {
-            margin-top: 30px;
-            text-align: right;
-            font-style: italic;
-            color: #2c3e50;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 20px;
-            }
-            .letter-container {
-                padding: 20px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Political Promise Tracker</title>
+  <style>
+    /* Global Styles & Background */
+    body {
+      margin: 0;
+      padding: 40px;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+    }
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    /* Overlay that contains the letter */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .overlay-content {
+      width: 90%;
+      max-width: 800px;
+      text-align: center;
+    }
+    
+    /* Letter Styles */
+    .letter-container {
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    .letter-container h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .emphasis {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+    .signature {
+      margin-top: 30px;
+      text-align: right;
+      font-style: italic;
+      color: #2c3e50;
+    }
+    
+    /* Continue Button & Scroll Indicator */
+    .continue-btn {
+      margin-top: 20px;
+      padding: 15px 30px;
+      font-size: 18px;
+      color: #fff;
+      background: #e74c3c;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .continue-btn:hover {
+      background: #c0392b;
+    }
+    .scroll-indicator {
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: 0.7;
+      animation: bounce 1.5s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+    
+    /* Political Promise Tracker Content (hidden behind the overlay) */
+    #tracker-content {
+      margin-top: 40px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    
+    @media (max-width: 600px) {
+      body {
+        padding: 20px;
+      }
+      .letter-container {
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-
-    <div class="overlay" id="overlay">
-        <div class="overlay-content">
-            <h1>Welcome</h1>
-            <p>Please read this important message before continuing.</p>
-            <button class="continue-btn" onclick="hideOverlay()">Continue</button>
-            <div class="scroll-indicator">⬇ Scroll down to continue ⬇</div>
-        </div>
-    </div>
-
-    <div class="letter-container">
+  <!-- Overlay containing the open letter message -->
+  <div class="overlay" id="overlay">
+    <div class="overlay-content">
+      <div class="letter-container">
         <h1>An Open Letter to the PC Party of Ontario</h1>
-        
         <p>To the PC Party of Ontario,</p>
-
-        <p>In a polling location, I witnessed diverse amount of people from every background, ethnicity, gender, and religion. From the bright-eyed curiosity of children, the resolute determination of young adults casting their first ever ballot, to mothers and fathers balancing civic duty with familial love, and seniors whose wisdom spans generations, each person came driven by a passion to vote for a better tomorrow.</p>
-
+        <p>In a polling location, I witnessed diverse amounts of people from every background, ethnicity, gender, and religion. From the bright-eyed curiosity of children, the resolute determination of young adults casting their first ever ballot, to mothers and fathers balancing civic duty with familial love, and seniors whose wisdom spans generations, each person came driven by a passion to vote for a better tomorrow.</p>
         <p>I witnessed acts of kindness that show the very essence of our Canadian spirit. Strangers holding doors open for one another, exchanging warm smiles and sharing hopeful words about the future. In every corner of the polling station, there was a unifying truth: each vote was not just a mark on a ballot but a testament to the enduring belief in democracy and the hope for a brighter future.</p>
-
         <p>I implore you, as the custodians of our province’s destiny, to approach your tenure with unwavering integrity and transparency. The promises you made during your campaigns are not mere political talking points; they are lifelines for families striving for better education, affordable housing and cheaper groceries; for individuals yearning for accessible healthcare; for communities working toward sustainable growth; and for the marginalized desiring equitable opportunities. These commitments embody the dreams and aspirations of every Ontarian who has placed their trust in you.</p>
-
         <p>So when the confetti settles and the headlines fade, remember the man who cast his vote from a hospice bed, his ballot a final act of faith. Recall the student who skipped lunch to join the line, believing that a single vote could mend their hunger. Recall the seniors that made it their day's mission to go out and cast their vote.</p>
-
         <p>To you who will lead: carry these people in your very bones. Let them echo in every podium speech, every policy debate, every late night discussion. You are not merely inheriting power; you are entrusted with hope. Do not dilute it with empty rhetoric or betray it through complacency.</p>
-
         <p>Be the leader who sees a parent’s silent tears at every cut to education; who hears the distant roar of wildfires in every compromise on the environment; who feels the tremor in a senior’s hand when housing becomes a luxury; who sees the young struggling with their mental and physical health due to inadequate healthcare.</p>
-
-        <p>Lead with the fierce, unyielding force of care, not with the cold view of optics and headlines.</p>
-
         <p class="emphasis">This is your task. Be bold. Be compassionate. Be accountable. But above all, be worthy of them.</p>
-
         <div class="signature">
-            <hr>
-            <p>A Concerned Citizen of Ontario</p>
+          <hr>
+          <p>A Concerned Citizen of Ontario</p>
         </div>
+      </div>
+      <button class="continue-btn" onclick="hideOverlay()">Continue</button>
+      <div class="scroll-indicator">⬇ Scroll down to continue ⬇</div>
     </div>
+  </div>
 
-    <script>
-        function hideOverlay() {
-            document.getElementById('overlay').classList.add('hidden');
-        }
-    </script>
+  <!-- Political Promise Tracker Content -->
+  <div id="tracker-content">
+    <h2>Political Promise Tracker</h2>
+    <p>This is where your political promise tracker content will appear.</p>
+    <!-- Add your tracker website elements below -->
+  </div>
 
+  <script>
+    function hideOverlay() {
+      document.getElementById('overlay').classList.add('hidden');
+    }
+  </script>
 </body>
 </html>
