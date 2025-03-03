@@ -59,7 +59,9 @@
       background: var(--accent);
       padding: 40px;
       border-left: 5px solid var(--primary);
-      max-width: 800px;
+      max-width: 90vw; /* 90% of viewport width */
+      max-height: 90vh; /* 90% of viewport height */
+      overflow-y: auto; /* Scroll if content is too long */
       position: relative;
       color: var(--text);
       font-size: 1.2rem;
@@ -70,9 +72,11 @@
       font-size: 2.5rem;
       text-transform: uppercase;
       margin-bottom: 20px;
+      text-align: center; /* Center the title */
     }
     .popup-content p {
       margin-bottom: 15px;
+      text-align: justify; /* Justify text for cleaner look */
     }
     .emphasis {
       color: var(--primary);
@@ -84,6 +88,7 @@
       font-size: 1.5rem;
       margin-top: 30px;
       opacity: 0.8;
+      font-style: italic; /* Italicize signature */
     }
     .continue-btn {
       background: var(--primary);
@@ -96,6 +101,9 @@
       text-transform: uppercase;
       margin-top: 20px;
       transition: background 0.3s ease;
+      display: block; /* Ensure it's a block element */
+      margin-left: auto; /* Center it */
+      margin-right: auto;
     }
     .continue-btn:hover {
       background: #0a63c8; /* Darker blue */
