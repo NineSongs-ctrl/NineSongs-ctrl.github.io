@@ -411,7 +411,7 @@
         // Parse the HTML content (simplified parsing for demo)
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlContent, 'text/html');
-        const promiseElements = doc.querySelectorAll('.promise-item'); // Hypothetical selector - adjust based on Polimeter's structure
+        const promiseElements = doc.querySelectorAll('promise-list-item'); // Hypothetical selector - adjust based on Polimeter's structure
         
         const promises = [];
         promiseElements.forEach(elem => {
