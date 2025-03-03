@@ -137,7 +137,7 @@
       border-top: 4px solid var(--primary);
       border-bottom: 2px solid var(--primary);
       transition: transform 0.3s ease;
-      cursor: pointer; /* Indicate clickable */
+      cursor: pointer;
     }
     .stat-card:hover {
       transform: translateY(-5px);
@@ -211,10 +211,10 @@
       transition: background 0.3s ease;
       background: var(--background);
     }
-    .promise-list-item.kept { background: rgba(0, 255, 0, 0.1); } /* Green highlight */
-    .promise-list-item.in-progress { background: rgba(255, 165, 0, 0.1); } /* Orange highlight */
-    .promise-list-item.not-yet-rated { background: rgba(255, 255, 0, 0.1); } /* Yellow highlight */
-    .promise-list-item.broken { background: rgba(255, 0, 0, 0.1); } /* Red highlight */
+    .promise-list-item.kept { background: rgba(0, 255, 0, 0.1); }
+    .promise-list-item.in-progress { background: rgba(255, 165, 0, 0.1); }
+    .promise-list-item.not-yet-rated { background: rgba(255, 255, 0, 0.1); }
+    .promise-list-item.broken { background: rgba(255, 0, 0, 0.1); }
     .promise-list-item:hover {
       background: #2a2a2a;
     }
@@ -361,7 +361,7 @@
     async function fetchPromises() {
       const loadingMessage = document.getElementById('loading-message');
       const promiseList = document.getElementById('promise-list');
-      loadingMessage.textContent = 'Loading promises...';
+      loadingMessage.textContent = 'Loading all promises from Polimeter...';
       promiseList.style.display = 'none';
 
       // Use proxy to fetch Polimeter with "View All" parameter
@@ -381,7 +381,7 @@
         allPromises = Array.from(promiseElements).map(elem => {
           const statusIcon = elem.querySelector('.promise-list-item__status-icon');
           const statusText = elem.querySelector('.promise-list-item__status-info-name')?.textContent.trim().toLowerCase() || 'not-yet-rated';
-          const statusColor = statusIcon ? window.getComputedStyle(statusIcon)?.backgroundColor || '#666' : '#666';
+          const statusColor = statusIcon ? statusIcon.style.backgroundColor || '#666' : '#666';
           const fullTitle = elem.querySelector('.promise-list-item__title-text a p')?.textContent.trim() || 'Unknown Promise';
           const promiseIdMatch = fullTitle.match(/(\d+\.\d+\.\d+)/)?.[0] || 'Unknown';
           const title = fullTitle.replace(/^\d+\.\d+\.\d+\s*-\s*/, '').trim(); // Remove ID from title
@@ -413,10 +413,12 @@
         // If no promises found, use fallback
         if (allPromises.length === 0) {
           allPromises = getFallbackPromises();
+          loadingMessage.textContent = 'No promises fetched. Using sample data.';
+        } else {
+          loadingMessage.style.display = 'none';
         }
 
         renderPromises(allPromises);
-        loadingMessage.style.display = 'none';
         promiseList.style.display = 'block';
       } catch (error) {
         console.error('Error fetching promises:', error);
@@ -554,8 +556,8 @@
           const dateB = new Date(b.querySelector('.promise-list-item__status-info-date')?.textContent || '03-Mar-2025');
           return dateB - dateA;
         } else {
-          const idA = a.querySelector('.promise-list-item__title-text p')?.textContent.match(/(\d+\.\d+\.\d+)/)?.[0] || '';
-          const idB = b.querySelector('.promise-list-item__title-text p')?.textContent.match(/(\d+\.\d+\.\d+)/)?.[0] || '';
+          const idA = a.dataset.id || '';
+          const idB = b.dataset.id || '';
           return idA.localeCompare(idB);
         }
       });
