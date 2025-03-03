@@ -5,158 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Political Promise Tracker</title>
   <style>
-    /* Enhanced Global Styles */
+    /* Root Color Variables */
     :root {
       --primary-accent: #e74c3c;
       --secondary-accent: #3498db;
       --dark-bg: #2c3e50;
-      --light-text: #ecf0f1;
+      --light-bg: #ffffff;
+      --light-text: #ffffff;
+      --dark-text: #333333;
     }
 
+    /* Global Styles */
     body {
       margin: 0;
       font-family: 'Arial', sans-serif;
-      line-height: 1.8;
-      color: var(--dark-bg);
-      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-      background-size: 400% 400%;
-      animation: gradient 15s ease infinite;
+      background: var(--light-bg);
+      color: var(--dark-text);
     }
 
-    @keyframes gradient {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Overlay Enhancements */
+    /* Overlay Styles */
     .overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.95);
-      color: var(--light-text);
-      z-index: 1000;
+      background: rgba(0, 0, 0, 0.85);
       display: flex;
       align-items: center;
       justify-content: center;
-      opacity: 1;
-      transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+      z-index: 1000;
+      transition: opacity 0.8s ease;
     }
-
     .overlay.hidden {
       opacity: 0;
+      visibility: hidden;
       pointer-events: none;
     }
-
     .overlay-content {
       width: 90%;
       max-width: 800px;
-      height: 85vh;
-      display: flex;
-      flex-direction: column;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 15px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      overflow: hidden;
-      transform: scale(0.98);
-      transition: transform 0.3s ease;
-    }
-
-    .overlay-content:hover {
-      transform: scale(1);
-    }
-
-    .letter-scroll {
-      flex: 1;
-      padding: 40px;
-      overflow-y: auto;
-      scroll-behavior: smooth;
-    }
-
-    /* Sophisticated Letter Styling */
-    .letter-container {
-      position: relative;
-      max-width: 700px;
-      margin: 0 auto;
-      background: linear-gradient(to right, #ffffff 95%, #f8f9fa 100%);
-      padding: 50px;
+      background: var(--light-bg);
       border-radius: 10px;
-      box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      text-align: left;
     }
 
-    .letter-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/png;base64,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');
-      opacity: 0.1;
-      pointer-events: none;
+    /* Letter Container */
+    .letter-container {
+      margin: 0 auto;
     }
-
-    h1 {
+    .letter-container h1 {
       font-family: 'Playfair Display', serif;
       font-size: 2.8rem;
       color: var(--dark-bg);
       text-align: center;
-      margin: 2rem 0;
+      margin: 1rem 0;
       position: relative;
     }
-
-    h1::after {
+    .letter-container h1::after {
       content: '';
       position: absolute;
-      bottom: -15px;
+      bottom: -10px;
       left: 50%;
       transform: translateX(-50%);
-      width: 120px;
+      width: 100px;
       height: 3px;
       background: var(--primary-accent);
     }
-
-    .emphasis {
-      color: var(--primary-accent);
-      font-weight: 600;
-      text-shadow: 0 2px 4px rgba(231, 76, 60, 0.2);
+    .letter-container p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin: 1rem 0;
     }
-
-    .signature {
-      margin-top: 3rem;
+    .letter-container .emphasis {
+      color: var(--primary-accent);
+      font-weight: bold;
+    }
+    .letter-container .signature {
+      margin-top: 2rem;
       text-align: right;
       font-family: 'Dancing Script', cursive;
       font-size: 1.8rem;
       color: var(--dark-bg);
-      position: relative;
+    }
+    .letter-container .signature hr {
+      border: none;
+      border-top: 1px solid var(--secondary-accent);
+      margin-bottom: 0.5rem;
     }
 
-    .signature::before {
-      content: '';
-      position: absolute;
-      top: -20px;
-      right: 0;
-      width: 150px;
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--primary-accent));
-    }
-
-    /* Enhanced Footer & Button */
+    /* Overlay Footer & Continue Button */
     .overlay-footer {
-      padding: 20px;
-      background: linear-gradient(to right, var(--dark-bg), #34495e);
-      box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
-      position: relative;
+      margin-top: 20px;
+      text-align: center;
     }
-
     .continue-btn {
-      display: block;
-      width: 200px;
-      margin: 0 auto;
       padding: 15px 30px;
       font-size: 1.1rem;
       color: var(--light-text);
@@ -164,112 +109,60 @@
       border: none;
       border-radius: 50px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      transform: translateY(0);
-      opacity: 0;
+      transition: background 0.3s ease, transform 0.3s ease;
     }
-
-    .continue-btn.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
     .continue-btn:hover {
       background: #c0392b;
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
     }
 
-    /* Scroll Progress Indicator */
-    .scroll-progress {
-      position: absolute;
-      top: -3px;
-      left: 0;
-      height: 3px;
-      background: var(--primary-accent);
-      transition: width 0.2s ease-out;
-    }
-
-    @media (max-width: 768px) {
-      .letter-container {
-        padding: 30px;
-      }
-      h1 {
-        font-size: 2rem;
-      }
-      .letter-scroll {
-        padding: 20px;
-      }
+    /* Tracker Content Styles */
+    #tracker-content {
+      padding: 40px;
+      max-width: 1000px;
+      margin: 20px auto;
+      text-align: center;
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Overlay -->
+  <!-- Overlay with Open Letter -->
   <div class="overlay" id="overlay">
     <div class="overlay-content">
-      <div class="scroll-progress" id="scrollProgress"></div>
-      <div class="letter-scroll" id="letterScroll">
-        <div class="letter-container">
-          <h1>An Open Letter to the PC Party of Ontario</h1>
-          <p>To the PC Party of Ontario,</p>
-          <p>In a polling location, I witnessed diverse amounts of people from every background, ethnicity, gender, and religion. From the bright-eyed curiosity of children, the resolute determination of young adults casting their first ever ballot, to mothers and fathers balancing civic duty with familial love, and seniors whose wisdom spans generations, each person came driven by a passion to vote for a better tomorrow.</p>
-          <p>I witnessed acts of kindness that show the very essence of our Canadian spirit. Strangers holding doors open for one another, exchanging warm smiles and sharing hopeful words about the future. In every corner of the polling station, there was a unifying truth: each vote was not just a mark on a ballot but a testament to the enduring belief in democracy and the hope for a brighter future.</p>
-          <p>I implore you, as the custodians of our province’s destiny, to approach your tenure with unwavering integrity and transparency. The promises you made during your campaigns are not mere political talking points; they are lifelines for families striving for better education, affordable housing and cheaper groceries; for individuals yearning for accessible healthcare; for communities working toward sustainable growth; and for the marginalized desiring equitable opportunities. These commitments embody the dreams and aspirations of every Ontarian who has placed their trust in you.</p>
-          <p>So when the confetti settles and the headlines fade, remember the man who cast his vote from a hospice bed, his ballot a final act of faith. Recall the student who skipped lunch to join the line, believing that a single vote could mend their hunger. Recall the seniors that made it their day's mission to go out and cast their vote.</p>
-          <p>To you who will lead: carry these people in your very bones. Let them echo in every podium speech, every policy debate, every late night discussion. You are not merely inheriting power; you are entrusted with hope. Do not dilute it with empty rhetoric or betray it through complacency.</p>
-          <p>Be the leader who sees a parent’s silent tears at every cut to education; who hears the distant roar of wildfires in every compromise on the environment; who feels the tremor in a senior’s hand when housing becomes a luxury; who sees the young struggling with their mental and physical health due to inadequate healthcare.</p>
-          <p class="emphasis">This is your task. Be bold. Be compassionate. Be accountable. But above all, be worthy of them.</p>
-          <div class="signature">
-            <hr>
-            <p>A Concerned Citizen of Ontario</p>
-
+      <div class="letter-container">
+        <h1>An Open Letter to the PC Party of Ontario</h1>
+        <p>To the PC Party of Ontario,</p>
+        <p>In a polling location, I witnessed diverse amounts of people from every background, ethnicity, gender, and religion. From the bright-eyed curiosity of children, the resolute determination of young adults casting their first ever ballot, to mothers and fathers balancing civic duty with familial love, and seniors whose wisdom spans generations, each person came driven by a passion to vote for a better tomorrow.</p>
+        <p>I witnessed acts of kindness that show the very essence of our Canadian spirit. Strangers holding doors open for one another, exchanging warm smiles and sharing hopeful words about the future. In every corner of the polling station, there was a unifying truth: each vote was not just a mark on a ballot but a testament to the enduring belief in democracy and the hope for a brighter future.</p>
+        <p>I implore you, as the custodians of our province’s destiny, to approach your tenure with unwavering integrity and transparency. The promises you made during your campaigns are not mere political talking points; they are lifelines for families striving for better education, affordable housing and cheaper groceries; for individuals yearning for accessible healthcare; for communities working toward sustainable growth; and for the marginalized desiring equitable opportunities. These commitments embody the dreams and aspirations of every Ontarian who has placed their trust in you.</p>
+        <p>So when the confetti settles and the headlines fade, remember the man who cast his vote from a hospice bed, his ballot a final act of faith. Recall the student who skipped lunch to join the line, believing that a single vote could mend their hunger. Recall the seniors that made it their day's mission to go out and cast their vote.</p>
+        <p>To you who will lead: carry these people in your very bones. Let them echo in every podium speech, every policy debate, every late night discussion. You are not merely inheriting power; you are entrusted with hope. Do not dilute it with empty rhetoric or betray it through complacency.</p>
+        <p>Be the leader who sees a parent’s silent tears at every cut to education; who hears the distant roar of wildfires in every compromise on the environment; who feels the tremor in a senior’s hand when housing becomes a luxury; who sees the young struggling with their mental and physical health due to inadequate healthcare.</p>
+        <p class="emphasis">This is your task. Be bold. Be compassionate. Be accountable. But above all, be worthy of them.</p>
+        <div class="signature">
+          <hr>
+          <p>A Concerned Citizen of Ontario</p>
         </div>
       </div>
       <div class="overlay-footer">
-        <button class="continue-btn" id="continueBtn" onclick="hideOverlay()">Continue to Tracker</button>
+        <button class="continue-btn" onclick="hideOverlay()">Continue to Tracker</button>
       </div>
     </div>
   </div>
 
   <!-- Tracker Content -->
   <div id="tracker-content">
-    <!-- Content remains the same -->
+    <h2>Political Promise Tracker</h2>
+    <p>This is where your political promise tracker content will appear.</p>
   </div>
 
   <script>
-    // Enhanced Scroll Handling
-    const letterScroll = document.getElementById('letterScroll');
-    const continueBtn = document.getElementById('continueBtn');
-    const scrollProgress = document.getElementById('scrollProgress');
-
-    function updateScrollProgress() {
-      const scrollTop = letterScroll.scrollTop;
-      const scrollHeight = letterScroll.scrollHeight - letterScroll.clientHeight;
-      const progress = (scrollTop / scrollHeight) * 100;
-      scrollProgress.style.width = `${progress}%`;
-
-      // Show button when scrolled to bottom
-      if (scrollTop + letterScroll.clientHeight >= letterScroll.scrollHeight - 50) {
-        continueBtn.classList.add('visible');
-      } else {
-        continueBtn.classList.remove('visible');
-      }
-    }
-
-    letterScroll.addEventListener('scroll', updateScrollProgress);
-    window.addEventListener('resize', updateScrollProgress);
-
     function hideOverlay() {
       document.getElementById('overlay').classList.add('hidden');
-      document.getElementById('tracker-content').scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
+      document.getElementById('tracker-content').scrollIntoView({ behavior: 'smooth' });
     }
-
-    // Initial check
-    updateScrollProgress();
   </script>
 </body>
 </html>
