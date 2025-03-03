@@ -4,362 +4,440 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Doug Ford Promise Tracker</title>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Cinzel and Roboto Condensed -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto+Condensed&display=swap" rel="stylesheet">
   <!-- Font Awesome for Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnH/PRWJOp5jhyYx/fN6KX0N3o5QJLLHk67L1c16/3/wt8Ly/QnVnC25HNTy7xVO+fYhzCUKg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <!-- Chart.js for Pie Chart -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     :root {
-      --primary: #1a73e8; /* Modern blue */
-      --secondary: #f5f6f5; /* Light background */
-      --text-dark: #333;
-      --text-light: #666;
-      --shadow: rgba(0, 0, 0, 0.1);
-      --status-kept: #34c759;
-      --status-in-progress: #ff9500;
-      --status-not-started: #ff3b30;
-      --status-broken: #d81b60;
+      --primary: #b30000; /* Intense red for emphasis */
+      --background: #1a1a1a; /* Deep charcoal for sophistication */
+      --text: #fff; /* Crisp white for contrast */
+      --accent: #333; /* Dark gray for secondary elements */
+      --shadow: rgba(0, 0, 0, 0.8);
+      --status-kept: #00b300; /* Green */
+      --status-in-progress: #ff9900; /* Orange */
+      --status-not-started: #666; /* Gray */
+      --status-broken: #b30000; /* Red */
     }
 
-    /* Reset and Base Styles */
+    /* Global Styles */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
     body {
-      font-family: 'Roboto', sans-serif;
-      background: var(--secondary);
-      color: var(--text-dark);
-      line-height: 1.6;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
+      font-family: 'Roboto Condensed', sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.5;
       padding: 0 20px;
+    }
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
     }
 
     /* Header */
     header {
-      background: var(--primary);
-      color: #fff;
+      background: linear-gradient(to bottom, #222, var(--background));
       padding: 40px 0;
       text-align: center;
-      box-shadow: 0 2px 10px var(--shadow);
+      border-bottom: 2px solid var(--primary);
     }
     header h1 {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Cinzel', serif;
+      font-size: 3rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    header p {
+      font-size: 1.4rem;
+      opacity: 0.9;
+    }
+
+    /* Open Letter Section */
+    .open-letter {
+      background: var(--accent);
+      padding: 30px;
+      margin: 20px 0;
+      border-left: 5px solid var(--primary);
+      position: relative;
+      transition: max-height 0.5s ease;
+      overflow: hidden;
+    }
+    .open-letter.collapsed {
+      max-height: 120px;
+    }
+    .open-letter h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .open-letter p {
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+    .emphasis {
+      color: var(--primary);
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .signature {
+      text-align: right;
+      font-size: 1.2rem;
+      margin-top: 20px;
+      opacity: 0.8;
+    }
+    .toggle-letter {
+      background: var(--primary);
+      color: var(--text);
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      text-transform: uppercase;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      transition: background 0.3s ease;
+    }
+    .toggle-letter:hover {
+      background: #800000; /* Darker red on hover */
+    }
+
+    /* Statistics Section */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 40px 0;
+    }
+    .stat-card {
+      background: var(--accent);
+      padding: 20px;
+      text-align: center;
+      border-top: 4px solid var(--primary);
+      transition: transform 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+    .stat-card i {
       font-size: 2.5rem;
       margin-bottom: 10px;
     }
-    header p {
+    .stat-card.kept i { color: var(--status-kept); }
+    .stat-card.in-progress i { color: var(--status-in-progress); }
+    .stat-card.not-started i { color: var(--status-not-started); }
+    .stat-card.broken i { color: var(--status-broken); }
+    .stat-card h3 {
+      font-family: 'Cinzel', serif;
       font-size: 1.2rem;
+      text-transform: uppercase;
     }
-
-    /* Stats Row */
-    .stats-row {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      background: #fff;
-      padding: 20px;
-      margin: 20px 0;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px var(--shadow);
-    }
-    .stats-item {
-      text-align: center;
-      padding: 10px;
-      flex: 1;
-      min-width: 150px;
-    }
-    .stats-item h3 {
-      font-size: 1.1rem;
-      margin-bottom: 5px;
-    }
-    .stats-item span {
-      font-size: 1.5rem;
-      font-weight: 500;
-    }
-    .stats-chart {
-      max-width: 200px;
-      margin: 0 auto;
+    .stat-card p {
+      font-size: 2rem;
+      font-weight: bold;
     }
 
     /* Filter Controls */
-    .filter-controls {
+    .filters {
       display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin: 20px 0;
+      justify-content: space-between;
       align-items: center;
+      margin: 20px 0;
+      padding: 15px;
+      background: var(--accent);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    .filter-controls input {
+    .search-box input {
+      padding: 10px 15px;
+      width: 300px;
+      background: #222;
+      border: 1px solid var(--primary);
+      color: var(--text);
+      font-family: 'Roboto Condensed', sans-serif;
+      font-size: 1rem;
+    }
+    .search-box input:focus {
+      outline: none;
+      border-color: #fff;
+    }
+    .sort select {
       padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      flex: 1;
-      min-width: 200px;
-    }
-    .filter-controls select {
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      min-width: 150px;
-    }
-    .status-filter {
-      display: flex;
-      gap: 10px;
-    }
-    .status-btn {
-      padding: 8px 15px;
-      border: none;
-      border-radius: 5px;
-      background: #e0e0e0;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .status-btn.active, .status-btn:hover {
-      background: var(--primary);
-      color: #fff;
+      background: #222;
+      border: 1px solid var(--primary);
+      color: var(--text);
+      font-family: 'Roboto Condensed', sans-serif;
+      font-size: 1rem;
     }
 
-    /* Promise List */
-    .promise-list {
-      display: grid;
-      gap: 15px;
+    /* Promise Table */
+    .promise-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
     }
-    .promise-item {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px var(--shadow);
-      transition: all 0.3s ease;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      align-items: center;
+    .promise-table thead {
+      background: #222;
+      text-transform: uppercase;
+      font-family: 'Cinzel', serif;
     }
-    .promise-item:hover {
-      box-shadow: 0 4px 10px var(--shadow);
-      transform: translateY(-2px);
+    .promise-table th {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 2px solid var(--primary);
     }
-    .promise-status {
-      width: 40px;
-      height: 40px;
+    .promise-table td {
+      padding: 15px;
+      border-bottom: 1px solid #444;
+    }
+    .promise-table tbody tr {
+      background: var(--background);
+      transition: background 0.3s ease;
+    }
+    .promise-table tbody tr:hover {
+      background: #2a2a2a;
+    }
+    .status-icon {
+      width: 25px;
+      height: 25px;
       border-radius: 50%;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       color: #fff;
-      flex-shrink: 0;
+      font-size: 0.9rem;
     }
-    .promise-status.kept { background: var(--status-kept); }
-    .promise-status.in-progress { background: var(--status-in-progress); }
-    .promise-status.not-started { background: var(--status-not-started); }
-    .promise-status.broken { background: var(--status-broken); }
-    .promise-text {
-      flex: 2;
-      min-width: 200px;
+    .kept { background: var(--status-kept); }
+    .in-progress { background: var(--status-in-progress); }
+    .not-started { background: var(--status-not-started); }
+    .broken { background: var(--status-broken); }
+    .details-btn {
+      background: var(--primary);
+      color: var(--text);
+      border: none;
+      padding: 8px 15px;
+      cursor: pointer;
+      font-family: 'Roboto Condensed', sans-serif;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      transition: background 0.3s ease;
     }
-    .promise-text p {
-      font-size: 1rem;
+    .details-btn:hover {
+      background: #800000;
     }
-    .promise-details-link {
-      flex: 1;
-      text-align: right;
-    }
-    .promise-details-link a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .promise-details-link a:hover {
-      text-decoration: underline;
-    }
-    .promise-details {
-      display: none;
-      width: 100%;
-      padding: 15px;
-      background: #f9f9f9;
-      border-radius: 5px;
-      margin-top: 10px;
+    .promise-details td {
+      background: #2a2a2a;
+      font-style: italic;
     }
 
-    /* Responsive Design */
+    /* Footer */
+    .party-info {
+      background: var(--accent);
+      padding: 20px;
+      text-align: center;
+      margin: 40px 0;
+      border-top: 2px solid var(--primary);
+    }
+    .party-info h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    /* Screen Reader Only */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
+
+    /* Responsive Adjustments */
     @media (max-width: 768px) {
-      .stats-row { flex-direction: column; }
-      .filter-controls { flex-direction: column; }
-      .promise-item { flex-direction: column; text-align: center; }
-      .promise-details-link { text-align: center; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .filters { flex-direction: column; gap: 10px; }
+      .search-box input { width: 100%; }
+      .promise-table { display: block; overflow-x: auto; }
     }
   </style>
 </head>
 <body>
   <!-- Header -->
   <header>
-    <div class="container">
-      <h1>Doug Ford – Premier of Ontario</h1>
-      <p>Tracking Promises from the Progressive Conservative Party of Ontario</p>
-    </div>
+    <h1>Doug Ford – Premier of Ontario</h1>
+    <p>Progressive Conservative Party of Ontario</p>
   </header>
 
-  <!-- Main Content -->
-  <main class="container">
-    <!-- Stats Row -->
-    <div class="stats-row">
-      <div class="stats-item">
-        <h3 style="color: var(--status-kept);">Kept</h3>
-        <span id="kept-count">0</span>
-      </div>
-      <div class="stats-item">
-        <h3 style="color: var(--status-in-progress);">In Progress</h3>
-        <span id="in-progress-count">0</span>
-      </div>
-      <div class="stats-item">
-        <h3 style="color: var(--status-not-started);">Not Started</h3>
-        <span id="not-started-count">0</span>
-      </div>
-      <div class="stats-item">
-        <h3 style="color: var(--status-broken);">Broken</h3>
-        <span id="broken-count">0</span>
-      </div>
-      <div class="stats-chart">
-        <canvas id="status-chart"></canvas>
-      </div>
-    </div>
+  <!-- Open Letter -->
+  <section class="open-letter" id="open-letter">
+    <h2>Open Letter to the PC Party of Ontario</h2>
+    <p>To the PC Party of Ontario,</p>
+    <p>In a polling location, I witnessed diverse amounts of people from every background, ethnicity, gender, and religion. From the bright-eyed curiosity of children, the resolute determination of young adults casting their first ever ballot, to mothers and fathers balancing civic duty with familial love, and seniors whose wisdom spans generations, each person came driven by a passion to vote for a better tomorrow.</p>
+    <p>I witnessed acts of kindness that show the very essence of our Canadian spirit. Strangers holding doors open for one another, exchanging warm smiles and sharing hopeful words about the future. In every corner of the polling station, there was a unifying truth: each vote was not just a mark on a ballot but a testament to the enduring belief in democracy and the hope for a brighter future.</p>
+    <p>I implore you, as the custodians of our province’s destiny, to approach your tenure with unwavering integrity and transparency. The promises you made during your campaigns are not mere political talking points; they are lifelines for families striving for better education, affordable housing and cheaper groceries; for individuals yearning for accessible healthcare; for communities working toward sustainable growth; and for the marginalized desiring equitable opportunities. These commitments embody the dreams and aspirations of every Ontarian who has placed their trust in you.</p>
+    <p>So when the confetti settles and the headlines fade, remember the man who cast his vote from a hospice bed, his ballot a final act of faith. Recall the student who skipped lunch to join the line, believing that a single vote could mend their hunger. Recall the seniors that made it their day's mission to go out and cast their vote.</p>
+    <p>To you who will lead: carry these people in your very bones. Let them echo in every podium speech, every policy debate, every late night discussion. You are not merely inheriting power; you are entrusted with hope. Do not dilute it with empty rhetoric or betray it through complacency.</p>
+    <p>Be the leader who sees a parent’s silent tears at every cut to education; who hears the distant roar of wildfires in every compromise on the environment; who feels the tremor in a senior’s hand when housing becomes a luxury; who sees the young struggling with their mental and physical health due to inadequate healthcare.</p>
+    <p class="emphasis">This is your task. Be bold. Be compassionate. Be accountable. But above all, be worthy of them.</p>
+    <div class="signature">A Concerned Citizen of Ontario</div>
+    <button class="toggle-letter" onclick="toggleLetter()">Collapse</button>
+  </section>
 
-    <!-- Filter Controls -->
-    <div class="filter-controls">
-      <input type="text" placeholder="Search promises..." aria-label="Search promises">
-      <div class="status-filter">
-        <button class="status-btn active" data-filter="all">All</button>
-        <button class="status-btn" data-filter="kept">Kept</button>
-        <button class="status-btn" data-filter="in-progress">In Progress</button>
-        <button class="status-btn" data-filter="not-started">Not Started</button>
-        <button class="status-btn" data-filter="broken">Broken</button>
-      </div>
+  <!-- Statistics -->
+  <div class="stats">
+    <div class="stat-card kept">
+      <i class="fas fa-check-circle"></i>
+      <h3>Kept</h3>
+      <p id="kept-count">0</p>
+    </div>
+    <div class="stat-card in-progress">
+      <i class="fas fa-hourglass-half"></i>
+      <h3>In Progress</h3>
+      <p id="in-progress-count">0</p>
+    </div>
+    <div class="stat-card not-started">
+      <i class="fas fa-pause-circle"></i>
+      <h3>Not Started</h3>
+      <p id="not-started-count">0</p>
+    </div>
+    <div class="stat-card broken">
+      <i class="fas fa-times-circle"></i>
+      <h3>Broken</h3>
+      <p id="broken-count">0</p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="search-box">
+      <input type="text" placeholder="Search Promises..." aria-label="Search promises">
+    </div>
+    <div class="sort">
       <select aria-label="Sort by">
-        <option value="date">Sort by Date</option>
-        <option value="text">Sort by Promise Text</option>
+        <option value="last_updated">Sort by Last Updated</option>
+        <option value="promise_id">Sort by Promise ID</option>
       </select>
     </div>
+  </div>
 
-    <!-- Promise List -->
-    <div class="promise-list" id="promise-list">
-      <div class="promise-item" data-status="kept">
-        <div class="promise-status kept">
-          <i class="fa fa-check-circle"></i>
-        </div>
-        <div class="promise-text">
-          <p>Invest $1 billion over the next three years to boost skilled trades.</p>
-        </div>
-        <div class="promise-details-link">
-          <a href="#" onclick="toggleDetails(this); return false;">Details</a>
-        </div>
-        <div class="promise-details">
-          <p>Announced in 2022, this promise has been implemented with funding allocated to trade schools across Ontario. [Source: Ontario Government]</p>
-        </div>
-      </div>
-      <!-- Add more promise items as needed -->
-      <div class="promise-item" data-status="in-progress">
-        <div class="promise-status in-progress">
-          <i class="fa fa-clock"></i>
-        </div>
-        <div class="promise-text">
-          <p>Reduce wait times in hospitals by increasing healthcare funding.</p>
-        </div>
-        <div class="promise-details-link">
-          <a href="#" onclick="toggleDetails(this); return false;">Details</a>
-        </div>
-        <div class="promise-details">
-          <p>Progress reported in 2023 with $500 million allocated; full implementation pending. [Source: Health Ministry]</p>
-        </div>
-      </div>
-    </div>
-  </main>
+  <!-- Promise Table -->
+  <table class="promise-table">
+    <thead>
+      <tr>
+        <th>Status</th>
+        <th>Promise ID</th>
+        <th>Title</th>
+        <th>Last Updated</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="promise-row" data-status="kept">
+        <td><span class="status-icon kept"><i class="fas fa-check-circle"></i></span><span class="sr-only">Kept</span></td>
+        <td>2.04.002</td>
+        <td>Invest $1 billion over the next three years to boost skilled trades.</td>
+        <td>22-Jul-2024</td>
+        <td><button class="details-btn">Details</button></td>
+      </tr>
+      <tr class="promise-details" style="display: none;">
+        <td colspan="5">Details: Fully funded initiative launched in 2022, with programs active across Ontario.</td>
+      </tr>
+      <tr class="promise-row" data-status="in-progress">
+        <td><span class="status-icon in-progress"><i class="fas fa-hourglass-half"></i></span><span class="sr-only">In Progress</span></td>
+        <td>2.04.012</td>
+        <td>Build highways and key infrastructure, including the Bradford Bypass.</td>
+        <td>17-Jul-2024</td>
+        <td><button class="details-btn">Details</button></td>
+      </tr>
+      <tr class="promise-details" style="display: none;">
+        <td colspan="5">Details: Construction underway, expected completion by 2026.</td>
+      </tr>
+      <!-- Add more promises as needed -->
+    </tbody>
+  </table>
+
+  <!-- Party Info -->
+  <footer class="party-info">
+    <h3>Current Party: PC Party of Ontario</h3>
+    <p><strong>Leader:</strong> Doug Ford</p>
+    <p>Source: <a href="https://www.polimeter.org/en/ford" target="_blank" aria-label="Source link to Polimeter">Polimeter</a></p>
+  </footer>
 
   <script>
-    // Real-time Search
-    document.querySelector('.filter-controls input').addEventListener('input', function(e) {
-      const searchTerm = e.target.value.toLowerCase();
-      document.querySelectorAll('.promise-item').forEach(item => {
-        const text = item.querySelector('.promise-text p').textContent.toLowerCase();
-        item.style.display = text.includes(searchTerm) ? '' : 'none';
+    // Toggle Open Letter
+    function toggleLetter() {
+      const letter = document.getElementById('open-letter');
+      const btn = letter.querySelector('.toggle-letter');
+      letter.classList.toggle('collapsed');
+      btn.textContent = letter.classList.contains('collapsed') ? 'Expand' : 'Collapse';
+    }
+
+    // Search Functionality
+    document.querySelector('.search-box input').addEventListener('input', function(e) {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll('.promise-row').forEach(row => {
+        const title = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+        const display = title.includes(term) ? '' : 'none';
+        row.style.display = display;
+        row.nextElementSibling.style.display = display;
       });
       updateStats();
     });
 
-    // Status Filter Buttons
-    document.querySelectorAll('.status-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        const filter = this.dataset.filter;
-        document.querySelectorAll('.promise-item').forEach(item => {
-          item.style.display = (filter === 'all' || item.dataset.status === filter) ? '' : 'none';
-        });
-        updateStats();
+    // Sort Functionality
+    document.querySelector('.sort select').addEventListener('change', function() {
+      const sortBy = this.value;
+      const tbody = document.querySelector('.promise-table tbody');
+      const rows = Array.from(tbody.querySelectorAll('.promise-row'));
+      rows.sort((a, b) => {
+        if (sortBy === 'last_updated') {
+          const dateA = new Date(a.querySelector('td:nth-child(4)').textContent);
+          const dateB = new Date(b.querySelector('td:nth-child(4)').textContent);
+          return dateB - dateA;
+        } else {
+          const idA = a.querySelector('td:nth-child(2)').textContent;
+          const idB = b.querySelector('td:nth-child(2)').textContent;
+          return idA.localeCompare(idB);
+        }
+      });
+      rows.forEach(row => {
+        tbody.appendChild(row);
+        tbody.appendChild(row.nextElementSibling);
       });
     });
 
     // Toggle Details
-    function toggleDetails(link) {
-      const item = link.closest('.promise-item');
-      const details = item.querySelector('.promise-details');
-      if (details.style.display === 'block') {
-        details.style.display = 'none';
-        link.textContent = 'Details';
-      } else {
-        details.style.display = 'block';
-        link.textContent = 'Hide';
-      }
-    }
-
-    // Update Stats and Chart
-    function updateStats() {
-      const items = document.querySelectorAll('.promise-item');
-      const visibleItems = Array.from(items).filter(item => item.style.display !== 'none');
-      const total = visibleItems.length;
-      const kept = visibleItems.filter(item => item.dataset.status === 'kept').length;
-      const inProgress = visibleItems.filter(item => item.dataset.status === 'in-progress').length;
-      const notStarted = visibleItems.filter(item => item.dataset.status === 'not-started').length;
-      const broken = visibleItems.filter(item => item.dataset.status === 'broken').length;
-
-      document.getElementById('kept-count').textContent = kept;
-      document.getElementById('in-progress-count').textContent = inProgress;
-      document.getElementById('not-started-count').textContent = notStarted;
-      document.getElementById('broken-count').textContent = broken;
-
-      statusChart.data.datasets[0].data = [kept, inProgress, notStarted, broken];
-      statusChart.update();
-    }
-
-    // Pie Chart Initialization
-    const ctx = document.getElementById('status-chart').getContext('2d');
-    const statusChart = new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: ['Kept', 'In Progress', 'Not Started', 'Broken'],
-        datasets: [{
-          data: [0, 0, 0, 0],
-          backgroundColor: [
-            'var(--status-kept)',
-            'var(--status-in-progress)',
-            'var(--status-not-started)',
-            'var(--status-broken)'
-          ],
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false },
-        }
-      }
+    document.querySelectorAll('.details-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const details = this.closest('tr').nextElementSibling;
+        details.style.display = details.style.display === 'none' ? '' : 'none';
+        this.textContent = details.style.display === 'none' ? 'Details' : 'Hide';
+      });
     });
+
+    // Update Statistics
+    function updateStats() {
+      const rows = document.querySelectorAll('.promise-row:not([style*="display: none"])');
+      document.getElementById('kept-count').textContent = Array.from(rows).filter(r => r.dataset.status === 'kept').length;
+      document.getElementById('in-progress-count').textContent = Array.from(rows).filter(r => r.dataset.status === 'in-progress').length;
+      document.getElementById('not-started-count').textContent = Array.from(rows).filter(r => r.dataset.status === 'not-started').length;
+      document.getElementById('broken-count').textContent = Array.from(rows).filter(r => r.dataset.status === 'broken').length;
+    }
 
     // Initial Stats Update
     updateStats();
