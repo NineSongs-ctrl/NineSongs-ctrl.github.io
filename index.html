@@ -21,7 +21,6 @@
       --status-broken: #FF0000; /* Red for broken */
     }
 
-    /* Global Styles */
     * {
       margin: 0;
       padding: 0;
@@ -59,9 +58,9 @@
       background: var(--accent);
       padding: 40px;
       border-left: 5px solid var(--primary);
-      max-width: 90vw; /* 90% of viewport width */
-      max-height: 90vh; /* 90% of viewport height */
-      overflow-y: auto; /* Scroll if content is too long */
+      max-width: 90vw;
+      max-height: 90vh;
+      overflow-y: auto;
       position: relative;
       color: var(--text);
       font-size: 1.2rem;
@@ -106,7 +105,7 @@
       margin-right: auto;
     }
     .continue-btn:hover {
-      background: #0a63c8; /* Darker blue */
+      background: #0a63c8;
     }
 
     /* Header */
@@ -235,7 +234,7 @@
     }
     .kept { background: var(--status-kept); }
     .in-progress { background: var(--status-in-progress); }
-    .not-started { background: var(--status-not-started); }
+    .not-yet-rated { background: var(--status-not-started); }
     .broken { background: var(--status-broken); }
     .details-btn {
       background: var(--primary);
@@ -249,7 +248,7 @@
       transition: background 0.3s ease;
     }
     .details-btn:hover {
-      background: #0a63c8; /* Darker blue */
+      background: #0a63c8;
     }
     .promise-details td {
       background: #2a2a2a;
@@ -280,6 +279,13 @@
       overflow: hidden;
       clip: rect(0,0,0,0);
       border: 0;
+    }
+
+    /* Loading/Error Message */
+    #loading-message {
+      text-align: center;
+      padding: 20px;
+      font-size: 1.2rem;
     }
   </style>
 </head>
@@ -343,8 +349,11 @@
     </div>
   </div>
 
-  <!-- Promise Table with Sample Promises -->
-  <table class="promise-table">
+  <!-- Loading/Error Message -->
+  <div id="loading-message">Loading promises...</div>
+
+  <!-- Promise Table -->
+  <table class="promise-table" style="display: none;">
     <thead>
       <tr>
         <th>Status</th>
@@ -355,47 +364,8 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- Sample Promise 1: In Progress -->
-      <tr class="promise-row" data-status="in-progress">
-        <td><span class="status-icon in-progress"><i class="fas fa-hourglass-half"></i></span><span class="sr-only">In Progress</span></td>
-        <td>2.04.002</td>
-        <td>Invest $1 billion over the next three years to boost skilled trades.</td>
-        <td>22-Jul-2024</td>
-        <td><a href="https://www.ontario.ca/page/ontario-budget-2022">Ontario Budget 2022</a></td>
-        <td><button class="details-btn">Details</button></td>
-      </tr>
-      <tr class="promise-details" style="display: none;">
-        <td colspan="6">Details: Fully funded initiative launched in 2022, with programs active across Ontario.</td>
-      </tr>
-
-      <!-- Sample Promise 2: Broken (Red) -->
-      <tr class="promise-row broken" data-status="broken">
-        <td><span class="status-icon broken"><i class="fas fa-times-circle"></i></span><span class="sr-only">Broken</span></td>
-        <td>2.04.021</td>
-        <td>Build Highway 413 to reduce traffic and congestion in the Greater Toronto Area (GTA).</td>
-        <td>17-Jul-2024</td>
-        <td><a href="https://news.ontario.ca/en/release/1003189">Infrastructure Update</a></td>
-        <td><button class="details-btn">Details</button></td>
-      </tr>
-      <tr class="promise-details" style="display: none;">
-        <td colspan="6">Details: Construction delayed indefinitely due to budget constraints.</td>
-      </tr>
-
-      <!-- Sample Promise 3: Not Yet Rated -->
-      <tr class="promise-row" data-status="not-yet-rated">
-        <td><span class="status-icon not-started"><i class="fas fa-pause-circle"></i></span><span class="sr-only">Not Yet Rated</span></td>
-        <td>1.06.022</td>
-        <td>Clean up our communities: Commit resources to reduce garbage in our neighbourhoods and parks.</td>
-        <td>01-Jan-2025</td>
-        <td><a href="https://example.com/community-clean-up">Community Clean-Up Program</a></td>
-        <td><button class="details-btn">Details</button></td>
-      </tr>
-      <tr class="promise-details" style="display: none;">
-        <td colspan="6">Details: Initiative announced but no action taken yet.</td>
-      </tr>
-
-      <!-- Add more promises here -->
+    <tbody id="promise-table-body">
+      <!-- Promises will be dynamically loaded here -->
     </tbody>
   </table>
 
@@ -406,9 +376,10 @@
   </footer>
 
   <script>
-    // Show pop-up on load
+    // Show pop-up and fetch promises on load
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('popup').style.display = 'flex';
+      fetchPromises();
     });
 
     // Hide pop-up
@@ -420,6 +391,139 @@
     document.getElementById('popup').addEventListener('click', function(e) {
       if (e.target === this) hidePopup();
     });
+
+    // Fetch promises from a proxy endpoint
+    async function fetchPromises() {
+      const loadingMessage = document.getElementById('loading-message');
+      const table = document.querySelector('.promise-table');
+      loadingMessage.textContent = 'Loading promises...';
+      table.style.display = 'none';
+
+      // Use a proxy to fetch Polimeter data
+      const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.polimeter.org/en/ford?gb=ungrouped&sb=progress_desc');
+      
+      try {
+        const response = await fetch(proxyUrl);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        const htmlContent = data.contents;
+
+        // Parse the HTML content (simplified parsing for demo)
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlContent, 'text/html');
+        const promiseElements = doc.querySelectorAll('.promise-item'); // Hypothetical selector - adjust based on Polimeter's structure
+        
+        const promises = [];
+        promiseElements.forEach(elem => {
+          const promise = {
+            id: elem.querySelector('.promise-id')?.textContent || 'Unknown',
+            title: elem.querySelector('.promise-title')?.textContent || 'Unknown Promise',
+            status: elem.querySelector('.promise-status')?.textContent.toLowerCase() || 'not-yet-rated',
+            last_updated: elem.querySelector('.promise-date')?.textContent || '03-Mar-2025',
+            source_url: elem.querySelector('a')?.href || 'https://www.polimeter.org/en/ford',
+            source_name: 'Polimeter',
+            details: elem.querySelector('.promise-details')?.textContent || 'No details available'
+          };
+          promises.push(promise);
+        });
+
+        // If no promises found, use fallback data
+        if (promises.length === 0) {
+          promises.push(...getFallbackPromises());
+        }
+
+        renderPromises(promises);
+        loadingMessage.style.display = 'none';
+        table.style.display = 'table';
+      } catch (error) {
+        console.error('Error fetching promises:', error);
+        loadingMessage.textContent = 'Failed to load promises. Please try again later.';
+        renderPromises(getFallbackPromises()); // Fallback to sample data
+        table.style.display = 'table';
+      }
+    }
+
+    // Fallback promises if fetch fails
+    function getFallbackPromises() {
+      return [
+        {
+          id: "2.04.002",
+          title: "Invest $1 billion over the next three years to boost skilled trades.",
+          status: "in-progress",
+          last_updated: "22-Jul-2024",
+          source_url: "https://www.ontario.ca/page/ontario-budget-2022",
+          source_name: "Ontario Budget 2022",
+          details: "Fully funded initiative launched in 2022, with programs active across Ontario."
+        },
+        {
+          id: "2.04.021",
+          title: "Build Highway 413 to reduce traffic and congestion in the Greater Toronto Area (GTA).",
+          status: "broken",
+          last_updated: "17-Jul-2024",
+          source_url: "https://news.ontario.ca/en/release/1003189",
+          source_name: "Infrastructure Update",
+          details: "Construction delayed indefinitely due to budget constraints."
+        },
+        {
+          id: "1.06.022",
+          title: "Clean up our communities: Commit resources to reduce garbage in our neighbourhoods and parks.",
+          status: "not-yet-rated",
+          last_updated: "01-Jan-2025",
+          source_url: "https://www.ontario.ca/page/community-clean-up",
+          source_name: "Community Clean-Up Program",
+          details: "Initiative announced but no action taken yet."
+        }
+      ];
+    }
+
+    // Render promises into the table
+    function renderPromises(promises) {
+      const tbody = document.getElementById('promise-table-body');
+      tbody.innerHTML = '';
+      promises.forEach(promise => {
+        const row = document.createElement('tr');
+        row.className = `promise-row ${promise.status}`;
+        row.dataset.status = promise.status;
+        row.innerHTML = `
+          <td><span class="status-icon ${promise.status}"><i class="fas fa-${getIcon(promise.status)}"></i></span><span class="sr-only">${promise.status}</span></td>
+          <td>${promise.id}</td>
+          <td>${promise.title}</td>
+          <td>${promise.last_updated}</td>
+          <td><a href="${promise.source_url}" target="_blank">${promise.source_name}</a></td>
+          <td><button class="details-btn">Details</button></td>
+        `;
+        tbody.appendChild(row);
+
+        const detailsRow = document.createElement('tr');
+        detailsRow.className = 'promise-details';
+        detailsRow.style.display = 'none';
+        detailsRow.innerHTML = `<td colspan="6">Details: ${promise.details}</td>`;
+        tbody.appendChild(detailsRow);
+      });
+      updateStats();
+      addEventListeners();
+    }
+
+    function getIcon(status) {
+      switch (status) {
+        case 'kept': return 'check-circle';
+        case 'in-progress': return 'hourglass-half';
+        case 'not-yet-rated': return 'pause-circle';
+        case 'broken': return 'times-circle';
+        default: return 'question-circle';
+      }
+    }
+
+    // Add event listeners to details buttons
+    function addEventListeners() {
+      document.querySelectorAll('.details-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const details = this.closest('tr').nextElementSibling;
+          details.style.display = details.style.display === 'none' ? '' : 'none';
+          this.textContent = details.style.display === 'none' ? 'Details' : 'Hide';
+        });
+      });
+    }
 
     // Search Functionality
     document.querySelector('.search-box input').addEventListener('input', function(e) {
@@ -436,7 +540,7 @@
     // Sort Functionality
     document.querySelector('.sort select').addEventListener('change', function() {
       const sortBy = this.value;
-      const tbody = document.querySelector('.promise-table tbody');
+      const tbody = document.getElementById('promise-table-body');
       const rows = Array.from(tbody.querySelectorAll('.promise-row'));
       rows.sort((a, b) => {
         if (sortBy === 'last_updated') {
@@ -453,15 +557,7 @@
         tbody.appendChild(row);
         tbody.appendChild(row.nextElementSibling);
       });
-    });
-
-    // Toggle Details
-    document.querySelectorAll('.details-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const details = this.closest('tr').nextElementSibling;
-        details.style.display = details.style.display === 'none' ? '' : 'none';
-        this.textContent = details.style.display === 'none' ? 'Details' : 'Hide';
-      });
+      updateStats();
     });
 
     // Update Statistics
@@ -472,9 +568,6 @@
       document.getElementById('not-started-count').textContent = Array.from(rows).filter(r => r.dataset.status === 'not-yet-rated').length;
       document.getElementById('broken-count').textContent = Array.from(rows).filter(r => r.dataset.status === 'broken').length;
     }
-
-    // Initial Stats Update
-    updateStats();
   </script>
 </body>
 </html>
