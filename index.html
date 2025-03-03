@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Political Promise Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Dancing+Script:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    /* Root Color Variables */
     :root {
       --primary-accent: #e74c3c;
       --secondary-accent: #3498db;
@@ -13,16 +13,23 @@
       --light-bg: #ffffff;
       --light-text: #ffffff;
       --dark-text: #333333;
+      --progress-bg: #ddd;
     }
-
+    
     /* Global Styles */
     body {
       margin: 0;
-      font-family: 'Arial', sans-serif;
+      font-family: 'Roboto', sans-serif;
       background: var(--light-bg);
       color: var(--dark-text);
+      line-height: 1.6;
     }
-
+    
+    h1, h2, h3 {
+      margin: 0;
+      padding: 0;
+    }
+    
     /* Overlay Styles */
     .overlay {
       position: fixed;
@@ -37,33 +44,36 @@
       z-index: 1000;
       transition: opacity 0.8s ease;
     }
+    
     .overlay.hidden {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
     }
+    
     .overlay-content {
       width: 90%;
       max-width: 800px;
       background: var(--light-bg);
       border-radius: 10px;
       padding: 30px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
       text-align: left;
     }
-
-    /* Letter Container */
+    
     .letter-container {
       margin: 0 auto;
     }
+    
     .letter-container h1 {
       font-family: 'Playfair Display', serif;
       font-size: 2.8rem;
       color: var(--dark-bg);
       text-align: center;
-      margin: 1rem 0;
+      margin-bottom: 1rem;
       position: relative;
     }
+    
     .letter-container h1::after {
       content: '';
       position: absolute;
@@ -74,15 +84,17 @@
       height: 3px;
       background: var(--primary-accent);
     }
+    
     .letter-container p {
       font-size: 1.1rem;
-      line-height: 1.6;
-      margin: 1rem 0;
+      margin-bottom: 1rem;
     }
+    
     .letter-container .emphasis {
       color: var(--primary-accent);
       font-weight: bold;
     }
+    
     .letter-container .signature {
       margin-top: 2rem;
       text-align: right;
@@ -90,17 +102,18 @@
       font-size: 1.8rem;
       color: var(--dark-bg);
     }
+    
     .letter-container .signature hr {
       border: none;
       border-top: 1px solid var(--secondary-accent);
       margin-bottom: 0.5rem;
     }
-
-    /* Overlay Footer & Continue Button */
+    
     .overlay-footer {
-      margin-top: 20px;
       text-align: center;
+      margin-top: 20px;
     }
+    
     .continue-btn {
       padding: 15px 30px;
       font-size: 1.1rem;
@@ -111,21 +124,137 @@
       cursor: pointer;
       transition: background 0.3s ease, transform 0.3s ease;
     }
+    
     .continue-btn:hover {
       background: #c0392b;
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
     }
-
+    
     /* Tracker Content Styles */
     #tracker-content {
-      padding: 40px;
-      max-width: 1000px;
-      margin: 20px auto;
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: 40px auto;
+    }
+    
+    #tracker-content h2 {
       text-align: center;
+      margin-bottom: 20px;
+      color: var(--dark-bg);
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+    }
+    
+    .party-info {
+      background: var(--secondary-accent);
+      color: var(--light-text);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .party-info h3 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    
+    .party-info p {
+      margin: 5px 0 0;
+      font-size: 1.2rem;
+    }
+    
+    .promises {
+      margin-top: 40px;
+    }
+    
+    .promises h3 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2rem;
+      color: var(--dark-bg);
+    }
+    
+    .promises-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    
+    .promise-card {
+      background: var(--light-bg);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .promise-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .promise-card h4 {
+      margin: 0 0 10px;
+      font-size: 1.4rem;
+      color: var(--primary-accent);
+    }
+    
+    .promise-card p {
+      font-size: 1rem;
+      margin: 0 0 15px;
+    }
+    
+    .progress-bar {
+      background: var(--progress-bg);
+      border-radius: 50px;
+      overflow: hidden;
+      height: 20px;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 50px;
+      transition: width 0.5s ease;
+      text-align: center;
+      line-height: 20px;
+      color: var(--light-text);
+      font-size: 0.9rem;
+    }
+    
+    /* Progress Colors and Example Percentages */
+    .in-progress {
+      background: var(--secondary-accent);
+      width: 50%; /* Example: 50% complete */
+    }
+    
+    .promise-kept {
+      background: var(--primary-accent);
+      width: 100%; /* 100% complete */
+    }
+    
+    .not-started {
+      background: #7f8c8d;
+      width: 10%; /* Almost 0% complete */
+    }
+    
+    @media (max-width: 768px) {
+      #tracker-content {
+        padding: 20px;
+      }
+      .party-info h3 {
+        font-size: 1.5rem;
+      }
+      .party-info p {
+        font-size: 1rem;
+      }
+      .promises h3 {
+        font-size: 1.8rem;
+      }
     }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 </head>
 <body>
   <!-- Overlay with Open Letter -->
@@ -151,13 +280,53 @@
       </div>
     </div>
   </div>
-
+  
   <!-- Tracker Content -->
   <div id="tracker-content">
     <h2>Political Promise Tracker</h2>
-    <p>This is where your political promise tracker content will appear.</p>
+    <div class="party-info">
+      <h3>Current Party in Charge: PC Party of Ontario</h3>
+      <p><strong>Leader:</strong> Doug Ford</p>
+    </div>
+    <div class="promises">
+      <h3>2025 Provincial Election Promises</h3>
+      <div class="promises-grid">
+        <!-- Economics Promise -->
+        <div class="promise-card">
+          <h4>Economics</h4>
+          <p>Implement tax cuts and stimulate economic growth.</p>
+          <div class="progress-bar">
+            <div class="progress-fill in-progress">50%</div>
+          </div>
+        </div>
+        <!-- Healthcare Promise -->
+        <div class="promise-card">
+          <h4>Healthcare</h4>
+          <p>Increase hospital funding and reduce wait times.</p>
+          <div class="progress-bar">
+            <div class="progress-fill promise-kept">100%</div>
+          </div>
+        </div>
+        <!-- Infrastructure Promise -->
+        <div class="promise-card">
+          <h4>Infrastructure</h4>
+          <p>Improve public transit and upgrade roads.</p>
+          <div class="progress-bar">
+            <div class="progress-fill not-started">10%</div>
+          </div>
+        </div>
+        <!-- Education Promise -->
+        <div class="promise-card">
+          <h4>Education</h4>
+          <p>Enhance education funding and reduce class sizes.</p>
+          <div class="progress-bar">
+            <div class="progress-fill in-progress">50%</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
+  
   <script>
     function hideOverlay() {
       document.getElementById('overlay').classList.add('hidden');
