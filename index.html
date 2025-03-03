@@ -4,20 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ontario Promise Tracker</title>
-  <!-- Google Fonts: Exo 2 and Roboto Condensed -->
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Exo+2&family=Roboto+Condensed&display=swap" rel="stylesheet">
-  <!-- Font Awesome for Icons -->
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     :root {
-      --primary: #1a73e8; /* Blue */
-      --background: #1a1a1a; /* Black */
-      --text: #fff; /* White */
-      --accent: #333; /* Grey */
+      --primary: #1a73e8;
+      --background: #1a1a1a;
+      --text: #fff;
+      --accent: #333;
       --shadow: rgba(0, 0, 0, 0.8);
-      --status-kept: #00b300; /* Green */
-      --status-in-progress: #ff9900; /* Orange */
-      --status-not-started: #666; /* Grey */
+      --status-kept: #228B22;
+      --status-in-progress: #FF8C00;
+      --status-not-started: #AE0101;
       --status-broken: #FF0000; /* Red for broken */
     }
 
@@ -41,7 +41,7 @@
       text-decoration: underline;
     }
 
-    /* Pop-up for Open Letter */
+    /* Pop-up */
     .popup {
       display: none;
       position: fixed;
@@ -61,7 +61,6 @@
       max-width: 90vw;
       max-height: 90vh;
       overflow-y: auto;
-      position: relative;
       color: var(--text);
       font-size: 1.2rem;
       line-height: 1.8;
@@ -124,7 +123,7 @@
       text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
 
-    /* Statistics Section */
+    /* Statistics */
     .stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -195,90 +194,58 @@
       font-size: 1rem;
     }
 
-    /* Promise Table */
-    .promise-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
+    /* Promise List (Adapted from your snippet) */
+    .promise-list {
+      margin-top: 20px;
     }
-    .promise-table thead {
-      background: #222;
-      text-transform: uppercase;
-      font-family: 'Exo 2', sans-serif;
-    }
-    .promise-table th {
+    .promise-list-item {
+      display: flex;
+      align-items: flex-start;
       padding: 15px;
-      text-align: left;
-      border-bottom: 2px solid var(--primary);
-    }
-    .promise-table td {
-      padding: 15px;
-      border-bottom: 1px solid #444;
-    }
-    .promise-table tbody tr {
-      background: var(--background);
+      border-bottom: 1px solid #eee;
       transition: background 0.3s ease;
     }
-    .promise-table tbody tr:hover {
+    .promise-list-item:hover {
       background: #2a2a2a;
     }
-    .status-icon {
-      width: 25px;
-      height: 25px;
+    .promise-list-item__status {
+      flex: 0 0 60px;
+      text-align: center;
+    }
+    .promise-list-item__status-icon {
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       color: #fff;
-      font-size: 0.9rem;
+      margin-bottom: 5px;
     }
-    .kept { background: var(--status-kept); }
-    .in-progress { background: var(--status-in-progress); }
-    .not-yet-rated { background: var(--status-not-started); }
-    .broken { background: var(--status-broken); }
-    .details-btn {
-      background: var(--primary);
+    .promise-list-item__status-icon.kept { background: var(--status-kept); }
+    .promise-list-item__status-icon.in-progress { background: var(--status-in-progress); }
+    .promise-list-item__status-icon.not-yet-rated { background: var(--status-not-started); }
+    .promise-list-item__status-icon.broken { background: var(--status-broken); }
+    .promise-list-item__status-info {
+      font-size: 0.8rem;
+      color: #888;
+    }
+    .promise-list-item__title {
+      flex: 1;
+      padding: 0 15px;
+    }
+    .promise-list-item__title a {
+      text-decoration: none;
       color: var(--text);
-      border: none;
-      padding: 8px 15px;
-      cursor: pointer;
-      font-family: 'Roboto Condensed', sans-serif;
+    }
+    .promise-list-item__title a:hover {
+      text-decoration: underline;
+    }
+    .promise-list-item__right {
+      flex: 0 0 80px;
+      text-align: right;
       font-size: 0.9rem;
-      text-transform: uppercase;
-      transition: background 0.3s ease;
-    }
-    .details-btn:hover {
-      background: #0a63c8;
-    }
-    .promise-details td {
-      background: #2a2a2a;
-      font-style: italic;
-    }
-
-    /* Footer */
-    .party-info {
-      background: var(--accent);
-      padding: 20px;
-      text-align: center;
-      margin: 40px 0;
-      border-top: 2px solid var(--primary);
-    }
-    .party-info h3 {
-      font-family: 'Exo 2', sans-serif;
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-    }
-
-    /* Screen Reader Only */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0,0,0,0);
-      border: 0;
+      color: var(--primary);
     }
 
     /* Loading/Error Message */
@@ -320,7 +287,7 @@
       <p id="kept-count">0</p>
     </div>
     <div class="stat-card in-progress">
-      <i class="fas fa-hourglass-half"></i>
+      <i class="fas fa-cogs"></i>
       <h3>In Progress</h3>
       <p id="in-progress-count">0</p>
     </div>
@@ -352,22 +319,8 @@
   <!-- Loading/Error Message -->
   <div id="loading-message">Loading promises...</div>
 
-  <!-- Promise Table -->
-  <table class="promise-table" style="display: none;">
-    <thead>
-      <tr>
-        <th>Status</th>
-        <th>Promise ID</th>
-        <th>Title</th>
-        <th>Last Updated</th>
-        <th>Sources</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="promise-table-body">
-      <!-- Promises will be dynamically loaded here -->
-    </tbody>
-  </table>
+  <!-- Promise List -->
+  <div class="promise-list" id="promise-list" style="display: none;"></div>
 
   <!-- Party Info -->
   <footer class="party-info">
@@ -392,64 +345,81 @@
       if (e.target === this) hidePopup();
     });
 
-    // Fetch promises from a proxy endpoint
+    // Fetch promises from Polimeter via proxy
     async function fetchPromises() {
       const loadingMessage = document.getElementById('loading-message');
-      const table = document.querySelector('.promise-table');
+      const promiseList = document.getElementById('promise-list');
       loadingMessage.textContent = 'Loading promises...';
-      table.style.display = 'none';
+      promiseList.style.display = 'none';
 
-      // Use a proxy to fetch Polimeter data
       const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.polimeter.org/en/ford?gb=ungrouped&sb=progress_desc');
-      
+
       try {
         const response = await fetch(proxyUrl);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         const htmlContent = data.contents;
 
-        // Parse the HTML content (simplified parsing for demo)
+        // Parse Polimeter's HTML
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlContent, 'text/html');
-        const promiseElements = doc.querySelectorAll('.promise-list-item'); // Hypothetical selector - adjust based on Polimeter's structure
-        
-        const promises = [];
-        promiseElements.forEach(elem => {
-          const promise = {
-            id: elem.querySelector('.promise-id')?.textContent || 'Unknown',
-            title: elem.querySelector('.promise-title')?.textContent || 'Unknown Promise',
-            status: elem.querySelector('.promise-status')?.textContent.toLowerCase() || 'not-yet-rated',
-            last_updated: elem.querySelector('.promise-date')?.textContent || '03-Mar-2025',
-            source_url: elem.querySelector('a')?.href || 'https://www.polimeter.org/en/ford',
-            source_name: 'Polimeter',
-            details: elem.querySelector('.promise-details')?.textContent || 'No details available'
+        const promiseElements = doc.querySelectorAll('.promise-list-item');
+
+        const promises = Array.from(promiseElements).map(elem => {
+          const statusIcon = elem.querySelector('.promise-list-item__status-icon');
+          const statusText = elem.querySelector('.promise-list-item__status-info-name')?.textContent.trim().toLowerCase() || 'not-yet-rated';
+          const statusColor = statusIcon ? window.getComputedStyle(statusIcon).backgroundColor : '#666'; // Default to not-started
+          const promiseId = elem.querySelector('.promise-list-item__title-text a p')?.textContent.match(/(\d+\.\d+\.\d+)/)?.[0] || 'Unknown';
+          const title = elem.querySelector('.promise-list-item__title-text a p')?.textContent.trim() || 'Unknown Promise';
+          const lastUpdated = elem.querySelector('.promise-list-item__status-info-date')?.textContent.trim() || '03-Mar-2025';
+          const sourceUrl = elem.querySelector('.promise-list-item__title-text a')?.href || 'https://www.polimeter.org/en/ford';
+          const sourceName = 'Polimeter';
+
+          let statusClass;
+          switch (statusText) {
+            case 'kept': statusClass = 'kept'; break;
+            case 'in progress': statusClass = 'in-progress'; break;
+            case 'not yet rated': statusClass = 'not-yet-rated'; break;
+            case 'broken': statusClass = 'broken'; break;
+            default: statusClass = 'not-yet-rated';
+          }
+
+          return {
+            id: promiseId,
+            title: title,
+            status: statusClass,
+            statusColor: statusColor,
+            last_updated: lastUpdated,
+            source_url: sourceUrl,
+            source_name: sourceName,
+            details: elem.querySelector('.promise-details')?.textContent.trim() || 'Details not available'
           };
-          promises.push(promise);
         });
 
-        // If no promises found, use fallback data
+        // If no promises found, use fallback
         if (promises.length === 0) {
           promises.push(...getFallbackPromises());
         }
 
         renderPromises(promises);
         loadingMessage.style.display = 'none';
-        table.style.display = 'table';
+        promiseList.style.display = 'block';
       } catch (error) {
         console.error('Error fetching promises:', error);
-        loadingMessage.textContent = 'Failed to load promises. Please try again later.';
-        renderPromises(getFallbackPromises()); // Fallback to sample data
-        table.style.display = 'table';
+        loadingMessage.textContent = 'Failed to load promises. Using sample data.';
+        renderPromises(getFallbackPromises());
+        promiseList.style.display = 'block';
       }
     }
 
-    // Fallback promises if fetch fails
+    // Fallback promises
     function getFallbackPromises() {
       return [
         {
           id: "2.04.002",
           title: "Invest $1 billion over the next three years to boost skilled trades.",
           status: "in-progress",
+          statusColor: "#FF8C00",
           last_updated: "22-Jul-2024",
           source_url: "https://www.ontario.ca/page/ontario-budget-2022",
           source_name: "Ontario Budget 2022",
@@ -459,6 +429,7 @@
           id: "2.04.021",
           title: "Build Highway 413 to reduce traffic and congestion in the Greater Toronto Area (GTA).",
           status: "broken",
+          statusColor: "#FF0000",
           last_updated: "17-Jul-2024",
           source_url: "https://news.ontario.ca/en/release/1003189",
           source_name: "Infrastructure Update",
@@ -468,6 +439,7 @@
           id: "1.06.022",
           title: "Clean up our communities: Commit resources to reduce garbage in our neighbourhoods and parks.",
           status: "not-yet-rated",
+          statusColor: "#AE0101",
           last_updated: "01-Jan-2025",
           source_url: "https://www.ontario.ca/page/community-clean-up",
           source_name: "Community Clean-Up Program",
@@ -476,29 +448,43 @@
       ];
     }
 
-    // Render promises into the table
+    // Render promises into the list
     function renderPromises(promises) {
-      const tbody = document.getElementById('promise-table-body');
-      tbody.innerHTML = '';
+      const promiseList = document.getElementById('promise-list');
+      promiseList.innerHTML = '';
       promises.forEach(promise => {
-        const row = document.createElement('tr');
-        row.className = `promise-row ${promise.status}`;
-        row.dataset.status = promise.status;
-        row.innerHTML = `
-          <td><span class="status-icon ${promise.status}"><i class="fas fa-${getIcon(promise.status)}"></i></span><span class="sr-only">${promise.status}</span></td>
-          <td>${promise.id}</td>
-          <td>${promise.title}</td>
-          <td>${promise.last_updated}</td>
-          <td><a href="${promise.source_url}" target="_blank">${promise.source_name}</a></td>
-          <td><button class="details-btn">Details</button></td>
+        const item = document.createElement('div');
+        item.className = 'promise-list-item';
+        item.innerHTML = `
+          <div class="promise-list-item__status">
+            <div class="promise-list-item__status-icon" style="background: ${promise.statusColor}">
+              <i class="fas fa-${getIcon(promise.status)}"></i>
+            </div>
+            <div class="promise-list-item__status-info">
+              <div class="promise-list-item__status-info-name">${promise.status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
+              <div class="promise-list-item__status-info-date">${promise.last_updated}</div>
+            </div>
+          </div>
+          <div class="promise-list-item__title">
+            <div class="promise-list-item__title-text">
+              <a href="${promise.source_url}" target="_blank"><p>${promise.title}</p></a>
+            </div>
+            <div class="promise-list-item__title-read-more">
+              <a class="promise-list-item__right-link" href="${promise.source_url}" target="_blank">Read More</a>
+            </div>
+          </div>
+          <div class="promise-list-item__right">
+            <div class="promise-list-item__right-social-holder">
+              <button class="share-button" onclick="alert('Share on Twitter: ${promise.title}')">
+                <i class="fab fa-twitter"></i>
+              </button>
+              <button class="share-button" onclick="alert('Share on Facebook: ${promise.title}')">
+                <i class="fab fa-facebook"></i>
+              </button>
+            </div>
+          </div>
         `;
-        tbody.appendChild(row);
-
-        const detailsRow = document.createElement('tr');
-        detailsRow.className = 'promise-details';
-        detailsRow.style.display = 'none';
-        detailsRow.innerHTML = `<td colspan="6">Details: ${promise.details}</td>`;
-        tbody.appendChild(detailsRow);
+        promiseList.appendChild(item);
       });
       updateStats();
       addEventListeners();
@@ -507,32 +493,24 @@
     function getIcon(status) {
       switch (status) {
         case 'kept': return 'check-circle';
-        case 'in-progress': return 'hourglass-half';
+        case 'in-progress': return 'cogs';
         case 'not-yet-rated': return 'pause-circle';
         case 'broken': return 'times-circle';
         default: return 'question-circle';
       }
     }
 
-    // Add event listeners to details buttons
+    // Add event listeners to details (simplified for demo)
     function addEventListeners() {
-      document.querySelectorAll('.details-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const details = this.closest('tr').nextElementSibling;
-          details.style.display = details.style.display === 'none' ? '' : 'none';
-          this.textContent = details.style.display === 'none' ? 'Details' : 'Hide';
-        });
-      });
+      // Add detailed interactivity if needed
     }
 
     // Search Functionality
     document.querySelector('.search-box input').addEventListener('input', function(e) {
       const term = e.target.value.toLowerCase();
-      document.querySelectorAll('.promise-row').forEach(row => {
-        const title = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-        const display = title.includes(term) ? '' : 'none';
-        row.style.display = display;
-        row.nextElementSibling.style.display = display;
+      document.querySelectorAll('.promise-list-item').forEach(item => {
+        const title = item.querySelector('.promise-list-item__title-text p').textContent.toLowerCase();
+        item.style.display = title.includes(term) ? '' : 'none';
       });
       updateStats();
     });
@@ -540,33 +518,30 @@
     // Sort Functionality
     document.querySelector('.sort select').addEventListener('change', function() {
       const sortBy = this.value;
-      const tbody = document.getElementById('promise-table-body');
-      const rows = Array.from(tbody.querySelectorAll('.promise-row'));
-      rows.sort((a, b) => {
+      const promiseList = document.getElementById('promise-list');
+      const items = Array.from(promiseList.querySelectorAll('.promise-list-item'));
+      items.sort((a, b) => {
         if (sortBy === 'last_updated') {
-          const dateA = new Date(a.querySelector('td:nth-child(4)').textContent);
-          const dateB = new Date(b.querySelector('td:nth-child(4)').textContent);
+          const dateA = new Date(a.querySelector('.promise-list-item__status-info-date').textContent);
+          const dateB = new Date(b.querySelector('.promise-list-item__status-info-date').textContent);
           return dateB - dateA;
         } else {
-          const idA = a.querySelector('td:nth-child(2)').textContent;
-          const idB = b.querySelector('td:nth-child(2)').textContent;
+          const idA = a.querySelector('.promise-list-item__title-text p').textContent.match(/(\d+\.\d+\.\d+)/)?.[0] || '';
+          const idB = b.querySelector('.promise-list-item__title-text p').textContent.match(/(\d+\.\d+\.\d+)/)?.[0] || '';
           return idA.localeCompare(idB);
         }
       });
-      rows.forEach(row => {
-        tbody.appendChild(row);
-        tbody.appendChild(row.nextElementSibling);
-      });
+      items.forEach(item => promiseList.appendChild(item));
       updateStats();
     });
 
     // Update Statistics
     function updateStats() {
-      const rows = document.querySelectorAll('.promise-row:not([style*="display: none"])');
-      document.getElementById('kept-count').textContent = Array.from(rows).filter(r => r.dataset.status === 'kept').length;
-      document.getElementById('in-progress-count').textContent = Array.from(rows).filter(r => r.dataset.status === 'in-progress').length;
-      document.getElementById('not-started-count').textContent = Array.from(rows).filter(r => r.dataset.status === 'not-yet-rated').length;
-      document.getElementById('broken-count').textContent = Array.from(rows).filter(r => r.dataset.status === 'broken').length;
+      const items = document.querySelectorAll('.promise-list-item:not([style*="display: none"])');
+      document.getElementById('kept-count').textContent = Array.from(items).filter(i => i.dataset.status === 'kept').length;
+      document.getElementById('in-progress-count').textContent = Array.from(items).filter(i => i.dataset.status === 'in-progress').length;
+      document.getElementById('not-started-count').textContent = Array.from(items).filter(i => i.dataset.status === 'not-yet-rated').length;
+      document.getElementById('broken-count').textContent = Array.from(items).filter(i => i.dataset.status === 'broken').length;
     }
   </script>
 </body>
