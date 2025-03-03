@@ -16,7 +16,7 @@
       --accent: #333; /* Grey */
       --shadow: rgba(0, 0, 0, 0.8);
       --status-kept: #00FF00; /* Green for kept */
-      --status-in-progress: #FF8C00; /* Orange for in progress */
+      --status-in-progress: #FFA500; /* Brighter orange for in progress */
       --status-not-started: #FFFF00; /* Yellow for not started */
       --status-broken: #FF0000; /* Red for broken */
     }
@@ -137,6 +137,7 @@
       border-top: 4px solid var(--primary);
       border-bottom: 2px solid var(--primary);
       transition: transform 0.3s ease;
+      cursor: pointer; /* Indicate clickable */
     }
     .stat-card:hover {
       transform: translateY(-5px);
@@ -145,9 +146,13 @@
       font-size: 2.5rem;
       margin-bottom: 10px;
     }
+    .stat-card.kept { background: rgba(0, 255, 0, 0.1); }
     .stat-card.kept i { color: var(--status-kept); }
+    .stat-card.in-progress { background: rgba(255, 165, 0, 0.1); }
     .stat-card.in-progress i { color: var(--status-in-progress); }
+    .stat-card.not-started { background: rgba(255, 255, 0, 0.1); }
     .stat-card.not-started i { color: var(--status-not-started); }
+    .stat-card.broken { background: rgba(255, 0, 0, 0.1); }
     .stat-card.broken i { color: var(--status-broken); }
     .stat-card h3 {
       font-family: 'Exo 2', sans-serif;
@@ -207,7 +212,7 @@
       background: var(--background);
     }
     .promise-list-item.kept { background: rgba(0, 255, 0, 0.1); } /* Green highlight */
-    .promise-list-item.in-progress { background: rgba(255, 140, 0, 0.1); } /* Orange highlight */
+    .promise-list-item.in-progress { background: rgba(255, 165, 0, 0.1); } /* Orange highlight */
     .promise-list-item.not-yet-rated { background: rgba(255, 255, 0, 0.1); } /* Yellow highlight */
     .promise-list-item.broken { background: rgba(255, 0, 0, 0.1); } /* Red highlight */
     .promise-list-item:hover {
@@ -286,22 +291,22 @@
 
   <!-- Statistics -->
   <div class="stats">
-    <div class="stat-card kept">
+    <div class="stat-card kept" onclick="filterByStatus('kept')">
       <i class="fas fa-check-circle"></i>
       <h3>Kept</h3>
       <p id="kept-count">0</p>
     </div>
-    <div class="stat-card in-progress">
+    <div class="stat-card in-progress" onclick="filterByStatus('in-progress')">
       <i class="fas fa-cogs"></i>
       <h3>In Progress</h3>
       <p id="in-progress-count">0</p>
     </div>
-    <div class="stat-card not-started">
+    <div class="stat-card not-started" onclick="filterByStatus('not-yet-rated')">
       <i class="fas fa-pause-circle"></i>
       <h3>Not Started</h3>
       <p id="not-started-count">0</p>
     </div>
-    <div class="stat-card broken">
+    <div class="stat-card broken" onclick="filterByStatus('broken')">
       <i class="fas fa-times-circle"></i>
       <h3>Broken</h3>
       <p id="broken-count">0</p>
@@ -334,6 +339,8 @@
   </footer>
 
   <script>
+    let allPromises = []; // Store all promises for filtering
+
     // Show pop-up and fetch promises on load
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('popup').style.display = 'flex';
@@ -350,14 +357,15 @@
       if (e.target === this) hidePopup();
     });
 
-    // Fetch promises from Polimeter via proxy
+    // Fetch promises from Polimeter via proxy with "View All"
     async function fetchPromises() {
       const loadingMessage = document.getElementById('loading-message');
       const promiseList = document.getElementById('promise-list');
       loadingMessage.textContent = 'Loading promises...';
       promiseList.style.display = 'none';
 
-      const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.polimeter.org/en/ford?gb=ungrouped&sb=progress_desc');
+      // Use proxy to fetch Polimeter with "View All" parameter
+      const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.polimeter.org/en/ford?gb=ungrouped&sb=progress_desc&page=-1');
 
       try {
         const response = await fetch(proxyUrl);
@@ -370,12 +378,13 @@
         const doc = parser.parseFromString(htmlContent, 'text/html');
         const promiseElements = doc.querySelectorAll('.promise-list-item');
 
-        const promises = Array.from(promiseElements).map(elem => {
+        allPromises = Array.from(promiseElements).map(elem => {
           const statusIcon = elem.querySelector('.promise-list-item__status-icon');
           const statusText = elem.querySelector('.promise-list-item__status-info-name')?.textContent.trim().toLowerCase() || 'not-yet-rated';
           const statusColor = statusIcon ? window.getComputedStyle(statusIcon)?.backgroundColor || '#666' : '#666';
-          const promiseId = elem.querySelector('.promise-list-item__title-text a p')?.textContent.match(/(\d+\.\d+\.\d+)/)?.[0] || 'Unknown';
-          const title = elem.querySelector('.promise-list-item__title-text a p')?.textContent.trim() || 'Unknown Promise';
+          const fullTitle = elem.querySelector('.promise-list-item__title-text a p')?.textContent.trim() || 'Unknown Promise';
+          const promiseIdMatch = fullTitle.match(/(\d+\.\d+\.\d+)/)?.[0] || 'Unknown';
+          const title = fullTitle.replace(/^\d+\.\d+\.\d+\s*-\s*/, '').trim(); // Remove ID from title
           const lastUpdated = elem.querySelector('.promise-list-item__status-info-date')?.textContent.trim() || '03-Mar-2025';
           const sourceUrl = elem.querySelector('.promise-list-item__title-text a')?.href || 'https://www.polimeter.org/en/ford';
           const sourceName = 'Polimeter';
@@ -390,7 +399,7 @@
           }
 
           return {
-            id: promiseId,
+            id: promiseIdMatch,
             title: title,
             status: statusClass,
             statusColor: statusColor,
@@ -402,17 +411,18 @@
         });
 
         // If no promises found, use fallback
-        if (promises.length === 0) {
-          promises.push(...getFallbackPromises());
+        if (allPromises.length === 0) {
+          allPromises = getFallbackPromises();
         }
 
-        renderPromises(promises);
+        renderPromises(allPromises);
         loadingMessage.style.display = 'none';
         promiseList.style.display = 'block';
       } catch (error) {
         console.error('Error fetching promises:', error);
         loadingMessage.textContent = 'Failed to load promises. Using sample data.';
-        renderPromises(getFallbackPromises());
+        allPromises = getFallbackPromises();
+        renderPromises(allPromises);
         promiseList.style.display = 'block';
       }
     }
@@ -422,9 +432,9 @@
       return [
         {
           id: "2.04.002",
-          title: "Invest $1 billion over the next three years to boost skilled trades.",
+          title: "“Invest $1 billion over the next three years to boost skilled trades.”",
           status: "in-progress",
-          statusColor: "#FF8C00",
+          statusColor: "#FFA500",
           last_updated: "22-Jul-2024",
           source_url: "https://www.ontario.ca/page/ontario-budget-2022",
           source_name: "Ontario Budget 2022",
@@ -432,7 +442,7 @@
         },
         {
           id: "2.04.021",
-          title: "Build Highway 413 to reduce traffic and congestion in the Greater Toronto Area (GTA).",
+          title: "“Build Highway 413 to reduce traffic and congestion in the Greater Toronto Area (GTA).”",
           status: "broken",
           statusColor: "#FF0000",
           last_updated: "17-Jul-2024",
@@ -442,7 +452,7 @@
         },
         {
           id: "1.06.022",
-          title: "Clean up our communities: Commit resources to reduce garbage in our neighbourhoods and parks.",
+          title: "“Clean up our communities: Commit resources to reduce garbage in our neighbourhoods and parks.”",
           status: "not-yet-rated",
           statusColor: "#FFFF00",
           last_updated: "01-Jan-2025",
@@ -452,7 +462,7 @@
         },
         {
           id: "2.04.010",
-          title: "Reduce gas taxes to lower fuel costs for Ontario drivers.",
+          title: "“Reduce gas taxes to lower fuel costs for Ontario drivers.”",
           status: "kept",
           statusColor: "#00FF00",
           last_updated: "31-Dec-2023",
@@ -470,7 +480,7 @@
       promises.forEach(promise => {
         const item = document.createElement('div');
         item.className = `promise-list-item ${promise.status}`;
-        item.dataset.status = promise.status; // Ensure data-status is set
+        item.dataset.status = promise.status;
         item.innerHTML = `
           <div class="promise-list-item__status">
             <div class="promise-list-item__status-icon" style="background: ${promise.statusColor}">
@@ -503,7 +513,6 @@
         promiseList.appendChild(item);
       });
       updateStats();
-      addEventListeners();
     }
 
     function getIcon(status) {
@@ -516,9 +525,12 @@
       }
     }
 
-    // Add event listeners (simplified for demo)
-    function addEventListeners() {
-      console.log('Event listeners added');
+    // Filter by status
+    function filterByStatus(status) {
+      document.querySelectorAll('.promise-list-item').forEach(item => {
+        item.style.display = item.classList.contains(status) ? '' : 'none';
+      });
+      updateStats();
     }
 
     // Search Functionality
