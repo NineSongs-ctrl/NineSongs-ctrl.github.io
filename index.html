@@ -10,14 +10,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     :root {
-      --primary: #1a73e8;
-      --background: #1a1a1a;
-      --text: #fff;
-      --accent: #333;
+      --primary: #1a73e8; /* Blue */
+      --background: #1a1a1a; /* Black */
+      --text: #fff; /* White */
+      --accent: #333; /* Grey */
       --shadow: rgba(0, 0, 0, 0.8);
-      --status-kept: #228B22;
-      --status-in-progress: #FF8C00;
-      --status-not-started: #AE0101;
+      --status-kept: #00FF00; /* Green for kept */
+      --status-in-progress: #FF8C00; /* Orange for in progress */
+      --status-not-started: #FFFF00; /* Yellow for not started */
       --status-broken: #FF0000; /* Red for broken */
     }
 
@@ -194,7 +194,7 @@
       font-size: 1rem;
     }
 
-    /* Promise List (Adapted from your snippet) */
+    /* Promise List */
     .promise-list {
       margin-top: 20px;
     }
@@ -204,7 +204,12 @@
       padding: 15px;
       border-bottom: 1px solid #eee;
       transition: background 0.3s ease;
+      background: var(--background);
     }
+    .promise-list-item.kept { background: rgba(0, 255, 0, 0.1); } /* Green highlight */
+    .promise-list-item.in-progress { background: rgba(255, 140, 0, 0.1); } /* Orange highlight */
+    .promise-list-item.not-yet-rated { background: rgba(255, 255, 0, 0.1); } /* Yellow highlight */
+    .promise-list-item.broken { background: rgba(255, 0, 0, 0.1); } /* Red highlight */
     .promise-list-item:hover {
       background: #2a2a2a;
     }
@@ -368,7 +373,7 @@
         const promises = Array.from(promiseElements).map(elem => {
           const statusIcon = elem.querySelector('.promise-list-item__status-icon');
           const statusText = elem.querySelector('.promise-list-item__status-info-name')?.textContent.trim().toLowerCase() || 'not-yet-rated';
-          const statusColor = statusIcon ? window.getComputedStyle(statusIcon).backgroundColor : '#666'; // Default to not-started
+          const statusColor = statusIcon ? window.getComputedStyle(statusIcon)?.backgroundColor || '#666' : '#666';
           const promiseId = elem.querySelector('.promise-list-item__title-text a p')?.textContent.match(/(\d+\.\d+\.\d+)/)?.[0] || 'Unknown';
           const title = elem.querySelector('.promise-list-item__title-text a p')?.textContent.trim() || 'Unknown Promise';
           const lastUpdated = elem.querySelector('.promise-list-item__status-info-date')?.textContent.trim() || '03-Mar-2025';
@@ -392,7 +397,7 @@
             last_updated: lastUpdated,
             source_url: sourceUrl,
             source_name: sourceName,
-            details: elem.querySelector('.promise-details')?.textContent.trim() || 'Details not available'
+            details: elem.querySelector('.promise-details')?.textContent?.trim() || 'Details not available'
           };
         });
 
@@ -439,11 +444,21 @@
           id: "1.06.022",
           title: "Clean up our communities: Commit resources to reduce garbage in our neighbourhoods and parks.",
           status: "not-yet-rated",
-          statusColor: "#AE0101",
+          statusColor: "#FFFF00",
           last_updated: "01-Jan-2025",
           source_url: "https://www.ontario.ca/page/community-clean-up",
           source_name: "Community Clean-Up Program",
           details: "Initiative announced but no action taken yet."
+        },
+        {
+          id: "2.04.010",
+          title: "Reduce gas taxes to lower fuel costs for Ontario drivers.",
+          status: "kept",
+          statusColor: "#00FF00",
+          last_updated: "31-Dec-2023",
+          source_url: "https://news.ontario.ca/en/release/1003189",
+          source_name: "Gas Tax Reduction Announcement",
+          details: "Gas tax reduced by 5.7 cents per litre through 2023."
         }
       ];
     }
@@ -454,7 +469,8 @@
       promiseList.innerHTML = '';
       promises.forEach(promise => {
         const item = document.createElement('div');
-        item.className = 'promise-list-item';
+        item.className = `promise-list-item ${promise.status}`;
+        item.dataset.status = promise.status; // Ensure data-status is set
         item.innerHTML = `
           <div class="promise-list-item__status">
             <div class="promise-list-item__status-icon" style="background: ${promise.statusColor}">
@@ -500,16 +516,16 @@
       }
     }
 
-    // Add event listeners to details (simplified for demo)
+    // Add event listeners (simplified for demo)
     function addEventListeners() {
-      // Add detailed interactivity if needed
+      console.log('Event listeners added');
     }
 
     // Search Functionality
     document.querySelector('.search-box input').addEventListener('input', function(e) {
       const term = e.target.value.toLowerCase();
       document.querySelectorAll('.promise-list-item').forEach(item => {
-        const title = item.querySelector('.promise-list-item__title-text p').textContent.toLowerCase();
+        const title = item.querySelector('.promise-list-item__title-text p')?.textContent.toLowerCase() || '';
         item.style.display = title.includes(term) ? '' : 'none';
       });
       updateStats();
@@ -522,12 +538,12 @@
       const items = Array.from(promiseList.querySelectorAll('.promise-list-item'));
       items.sort((a, b) => {
         if (sortBy === 'last_updated') {
-          const dateA = new Date(a.querySelector('.promise-list-item__status-info-date').textContent);
-          const dateB = new Date(b.querySelector('.promise-list-item__status-info-date').textContent);
+          const dateA = new Date(a.querySelector('.promise-list-item__status-info-date')?.textContent || '03-Mar-2025');
+          const dateB = new Date(b.querySelector('.promise-list-item__status-info-date')?.textContent || '03-Mar-2025');
           return dateB - dateA;
         } else {
-          const idA = a.querySelector('.promise-list-item__title-text p').textContent.match(/(\d+\.\d+\.\d+)/)?.[0] || '';
-          const idB = b.querySelector('.promise-list-item__title-text p').textContent.match(/(\d+\.\d+\.\d+)/)?.[0] || '';
+          const idA = a.querySelector('.promise-list-item__title-text p')?.textContent.match(/(\d+\.\d+\.\d+)/)?.[0] || '';
+          const idB = b.querySelector('.promise-list-item__title-text p')?.textContent.match(/(\d+\.\d+\.\d+)/)?.[0] || '';
           return idA.localeCompare(idB);
         }
       });
@@ -538,10 +554,15 @@
     // Update Statistics
     function updateStats() {
       const items = document.querySelectorAll('.promise-list-item:not([style*="display: none"])');
-      document.getElementById('kept-count').textContent = Array.from(items).filter(i => i.dataset.status === 'kept').length;
-      document.getElementById('in-progress-count').textContent = Array.from(items).filter(i => i.dataset.status === 'in-progress').length;
-      document.getElementById('not-started-count').textContent = Array.from(items).filter(i => i.dataset.status === 'not-yet-rated').length;
-      document.getElementById('broken-count').textContent = Array.from(items).filter(i => i.dataset.status === 'broken').length;
+      const keptCount = Array.from(items).filter(i => i.classList.contains('kept')).length;
+      const inProgressCount = Array.from(items).filter(i => i.classList.contains('in-progress')).length;
+      const notStartedCount = Array.from(items).filter(i => i.classList.contains('not-yet-rated')).length;
+      const brokenCount = Array.from(items).filter(i => i.classList.contains('broken')).length;
+
+      document.getElementById('kept-count').textContent = keptCount;
+      document.getElementById('in-progress-count').textContent = inProgressCount;
+      document.getElementById('not-started-count').textContent = notStartedCount;
+      document.getElementById('broken-count').textContent = brokenCount;
     }
   </script>
 </body>
