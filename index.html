@@ -18,7 +18,7 @@
       --status-kept: #00b300; /* Green */
       --status-in-progress: #ff9900; /* Orange */
       --status-not-started: #666; /* Grey */
-      --status-broken: #FF0000; /* Red for broken promises */
+      --status-broken: #FF0000; /* Red for broken */
     }
 
     /* Global Styles */
@@ -40,6 +40,73 @@
     }
     a:hover {
       text-decoration: underline;
+    }
+
+    /* Pop-up for Open Letter */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .popup-content {
+      background: var(--accent);
+      padding: 40px;
+      border-left: 5px solid var(--primary);
+      max-width: 90vw; /* 90% of viewport width */
+      max-height: 90vh; /* 90% of viewport height */
+      overflow-y: auto; /* Scroll if content is too long */
+      position: relative;
+      color: var(--text);
+      font-size: 1.2rem;
+      line-height: 1.8;
+    }
+    .popup-content h2 {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 2.5rem;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .popup-content p {
+      margin-bottom: 15px;
+      text-align: justify;
+    }
+    .emphasis {
+      color: var(--primary);
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .signature {
+      text-align: right;
+      font-size: 1.5rem;
+      margin-top: 30px;
+      opacity: 0.8;
+      font-style: italic;
+    }
+    .continue-btn {
+      background: var(--primary);
+      color: var(--text);
+      border: none;
+      padding: 15px 30px;
+      cursor: pointer;
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      margin-top: 20px;
+      transition: background 0.3s ease;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .continue-btn:hover {
+      background: #0a63c8; /* Darker blue */
     }
 
     /* Header */
@@ -169,7 +236,7 @@
     .kept { background: var(--status-kept); }
     .in-progress { background: var(--status-in-progress); }
     .not-started { background: var(--status-not-started); }
-    .broken { background: var(--status-broken); color: #fff; } /* Red for broken */
+    .broken { background: var(--status-broken); }
     .details-btn {
       background: var(--primary);
       color: var(--text);
@@ -214,23 +281,26 @@
       clip: rect(0,0,0,0);
       border: 0;
     }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .promise-table th, .promise-table td {
-        padding: 10px;
-      }
-      .filters {
-        flex-direction: column;
-        gap: 10px;
-      }
-      .search-box input {
-        width: 100%;
-      }
-    }
   </style>
 </head>
 <body>
+  <!-- Open Letter Pop-Up -->
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h2>Open Letter to the PC Party of Ontario</h2>
+      <p>To the PC Party of Ontario,</p>
+      <p>In a polling location, I witnessed diverse amounts of people from every background, ethnicity, gender, and religion. From the bright-eyed curiosity of children, the resolute determination of young adults casting their first ever ballot, to mothers and fathers balancing civic duty with familial love, and seniors whose wisdom spans generations, each person came driven by a passion to vote for a better tomorrow.</p>
+      <p>I witnessed acts of kindness that show the very essence of our Canadian spirit. Strangers holding doors open for one another, exchanging warm smiles and sharing hopeful words about the future. In every corner of the polling station, there was a unifying truth: each vote was not just a mark on a ballot but a testament to the enduring belief in democracy and the hope for a brighter future.</p>
+      <p>I implore you, as the custodians of our province’s destiny, to approach your tenure with unwavering integrity and transparency. The promises you made during your campaigns are not mere political talking points; they are lifelines for families striving for better education, affordable housing and cheaper groceries; for individuals yearning for accessible healthcare; for communities working toward sustainable growth; and for the marginalized desiring equitable opportunities. These commitments embody the dreams and aspirations of every Ontarian who has placed their trust in you.</p>
+      <p>So when the confetti settles and the headlines fade, remember the man who cast his vote from a hospice bed, his ballot a final act of faith. Recall the student who skipped lunch to join the line, believing that a single vote could mend their hunger. Recall the seniors that made it their day's mission to go out and cast their vote.</p>
+      <p>To you who will lead: carry these people in your very bones. Let them echo in every podium speech, every policy debate, every late night discussion. You are not merely inheriting power; you are entrusted with hope. Do not dilute it with empty rhetoric or betray it through complacency.</p>
+      <p>Be the leader who sees a parent’s silent tears at every cut to education; who hears the distant roar of wildfires in every compromise on the environment; who feels the tremor in a senior’s hand when housing becomes a luxury; who sees the young struggling with their mental and physical health due to inadequate healthcare.</p>
+      <p class="emphasis">This is your task. Be bold. Be compassionate. Be accountable. But above all, be worthy of them.</p>
+      <div class="signature">A Concerned Citizen of Ontario</div>
+      <button class="continue-btn" onclick="hidePopup()" aria-label="Continue to Tracker">Continue</button>
+    </div>
+  </div>
+
   <!-- Header -->
   <header>
     <h1>Ontario Promise Tracker</h1>
@@ -325,7 +395,7 @@
         <td colspan="6">Details: Initiative announced but no action taken yet.</td>
       </tr>
 
-      <!-- Add more promises here from Polimeter and other sources -->
+      <!-- Add more promises here -->
     </tbody>
   </table>
 
@@ -336,6 +406,21 @@
   </footer>
 
   <script>
+    // Show pop-up on load
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('popup').style.display = 'flex';
+    });
+
+    // Hide pop-up
+    function hidePopup() {
+      document.getElementById('popup').style.display = 'none';
+    }
+
+    // Close pop-up when clicking outside
+    document.getElementById('popup').addEventListener('click', function(e) {
+      if (e.target === this) hidePopup();
+    });
+
     // Search Functionality
     document.querySelector('.search-box input').addEventListener('input', function(e) {
       const term = e.target.value.toLowerCase();
