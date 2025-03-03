@@ -4,17 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Political Promise Tracker</title>
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Dancing+Script:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Font Awesome (for icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnH/PRWJOp5jhyYx/fN6KX0N3o5QJLLHk67L1c16/3/wt8Ly/QnVnC25HNTy7xVO+fYhzCUKg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     :root {
       --primary-accent: #e74c3c;
       --secondary-accent: #3498db;
       --dark-bg: #222;
       --light-bg: #fefefe;
-      --light-text: #fff;
       --medium-text: #555;
       --card-bg: #fff;
       --shadow: rgba(0, 0, 0, 0.1);
+      --timeline-color-1: #50A07A;
+      --timeline-color-2: #316c4f;
     }
     
     /* Global Styles */
@@ -25,20 +29,19 @@
       color: var(--medium-text);
       line-height: 1.6;
     }
-    
     h1, h2, h3, h4 {
       margin: 0;
       padding: 0;
     }
     
-    /* Overlay (Open Letter) */
+    /* Overlay – Open Letter */
     .overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0,0,0,0.85);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -58,6 +61,9 @@
       padding: 30px;
       box-shadow: 0 0 30px rgba(0,0,0,0.3);
       text-align: left;
+    }
+    .letter-container {
+      margin: 0 auto;
     }
     .letter-container h1 {
       font-family: 'Playfair Display', serif;
@@ -105,7 +111,7 @@
     .continue-btn {
       padding: 15px 30px;
       font-size: 1.1rem;
-      color: var(--light-text);
+      color: #fff;
       background: var(--primary-accent);
       border: none;
       border-radius: 50px;
@@ -115,13 +121,13 @@
     .continue-btn:hover {
       background: #c0392b;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+      box-shadow: 0 5px 15px rgba(231,76,60,0.4);
     }
     
-    /* Tracker Header (Hero Section) */
+    /* Tracker Header (Hero) */
     #tracker-header {
       background: var(--dark-bg);
-      color: var(--light-text);
+      color: #fff;
       padding: 40px 20px;
       text-align: center;
     }
@@ -135,6 +141,61 @@
       margin: 5px 0;
     }
     
+    /* Term Progress Timeline */
+    .term-progress {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+    .term-progress__info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      color: #ccc;
+    }
+    .term-progress__info .role {
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+    .term-progress__info .days {
+      font-size: 0.9rem;
+    }
+    .term-progress__timeline {
+      display: flex;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .term-progress__timeline-bar {
+      height: 100%;
+    }
+    .term-progress__timeline-bar:first-child {
+      background: var(--timeline-color-1);
+      width: 59.19%;
+    }
+    .term-progress__timeline-bar.active {
+      background: var(--timeline-color-2);
+      width: 40.81%;
+    }
+    .term-progress__labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #ccc;
+    }
+    .term-progress__label {
+      display: flex;
+      align-items: center;
+    }
+    .term-progress__label-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    
     /* Party Info Card */
     .party-info {
       background: var(--card-bg);
@@ -146,9 +207,9 @@
       text-align: center;
     }
     .party-info h3 {
-      margin: 0;
       font-size: 1.8rem;
       color: var(--dark-bg);
+      margin: 0;
     }
     .party-info p {
       margin: 5px 0;
@@ -166,86 +227,127 @@
       text-decoration: underline;
     }
     
-    /* Tracker Content */
+    /* Tracker Content Container */
     #tracker-content {
       padding: 20px;
       max-width: 1200px;
       margin: 0 auto 40px;
     }
     
-    .promises {
-      margin-top: 40px;
-    }
-    .promises h3 {
-      text-align: center;
+    /* Filtering and Sorting */
+    .filter-sort {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
       margin-bottom: 20px;
-      font-size: 2rem;
-      color: var(--dark-bg);
     }
-    .promises-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
+    .filter-sort .search-box {
+      flex: 1;
+      min-width: 200px;
+      margin-right: 10px;
     }
-    .promise-card {
-      background: var(--card-bg);
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 10px var(--shadow);
-      transition: transform 0.3s ease;
+    .filter-sort .search-box input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
     }
-    .promise-card:hover {
-      transform: translateY(-5px);
+    .filter-sort .dropdown {
+      flex: 0 0 200px;
+      margin-right: 10px;
     }
-    .promise-card h4 {
-      font-size: 1.4rem;
-      color: var(--primary-accent);
-      margin-bottom: 10px;
+    .filter-sort .dropdown select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #fff;
     }
-    .promise-card p {
-      font-size: 1rem;
-      margin: 0 0 10px;
+    
+    /* Promise List */
+    .promise-list {
+      margin-top: 20px;
     }
-    .status {
-      font-weight: 500;
+    .promise-list-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      transition: background 0.3s ease;
+    }
+    .promise-list-item:hover {
+      background: #f9f9f9;
+    }
+    .promise-list-item__status {
+      flex: 0 0 60px;
+      text-align: center;
+    }
+    .promise-list-item__status-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
       margin-bottom: 5px;
+    }
+    .promise-list-item__status-icon.kept {
+      background: #228B22;
+    }
+    .promise-list-item__status-icon.in-progress {
+      background: #FF8C00;
+    }
+    .promise-list-item__status-icon.not-started {
+      background: #AE0101;
+    }
+    .promise-list-item__status-info {
+      font-size: 0.8rem;
+      color: #888;
+    }
+    .promise-list-item__title {
+      flex: 1;
+      padding: 0 15px;
+    }
+    .promise-list-item__title a {
+      text-decoration: none;
       color: var(--dark-bg);
     }
-    .source {
+    .promise-list-item__title a:hover {
+      text-decoration: underline;
+    }
+    .promise-list-item__right {
+      flex: 0 0 80px;
+      text-align: right;
       font-size: 0.9rem;
       color: var(--secondary-accent);
     }
-    .source a {
-      color: var(--secondary-accent);
-      text-decoration: none;
-    }
-    .source a:hover {
-      text-decoration: underline;
-    }
     
+    /* Responsive */
     @media (max-width: 768px) {
-      #tracker-header h2 {
-        font-size: 2.2rem;
+      .filter-sort {
+        flex-direction: column;
       }
-      .party-info h3 {
-        font-size: 1.5rem;
+      .filter-sort .dropdown {
+        margin-top: 10px;
+        width: 100%;
       }
-      .party-info p {
-        font-size: 0.9rem;
+      .promise-list-item {
+        flex-direction: column;
+        align-items: flex-start;
       }
-      .promises h3 {
-        font-size: 1.8rem;
+      .promise-list-item__right {
+        align-self: flex-end;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Overlay with Open Letter -->
+  <!-- Overlay: Open Letter -->
   <div class="overlay" id="overlay">
     <div class="overlay-content">
       <div class="letter-container">
-        <h1>An Open Letter to the PC Party of Ontario</h1>
-        <p>To the PC Party of Ontario,</p>
+          <p>To the PC Party of Ontario,</p>
         <p>In a polling location, I witnessed diverse amounts of people from every background, ethnicity, gender, and religion. From the bright-eyed curiosity of children, the resolute determination of young adults casting their first ever ballot, to mothers and fathers balancing civic duty with familial love, and seniors whose wisdom spans generations, each person came driven by a passion to vote for a better tomorrow.</p>
         <p>I witnessed acts of kindness that show the very essence of our Canadian spirit. Strangers holding doors open for one another, exchanging warm smiles and sharing hopeful words about the future. In every corner of the polling station, there was a unifying truth: each vote was not just a mark on a ballot but a testament to the enduring belief in democracy and the hope for a brighter future.</p>
         <p>I implore you, as the custodians of our province’s destiny, to approach your tenure with unwavering integrity and transparency. The promises you made during your campaigns are not mere political talking points; they are lifelines for families striving for better education, affordable housing and cheaper groceries; for individuals yearning for accessible healthcare; for communities working toward sustainable growth; and for the marginalized desiring equitable opportunities. These commitments embody the dreams and aspirations of every Ontarian who has placed their trust in you.</p>
@@ -264,50 +366,151 @@
     </div>
   </div>
   
-  <!-- Tracker Content -->
+  <!-- Tracker Header with Term Progress Timeline -->
   <header id="tracker-header">
-    <h2>Political Promise Tracker</h2>
+    <h2>Promise Tracker</h2>
     <p>Tracking Ontario's 2025 Election Promises</p>
+    <div class="term-progress">
+      <div class="term-progress__info">
+        <div class="role">Premier – Progressive Conservative Party of Ontario</div>
+        <div class="days">2,409 days in office</div>
+      </div>
+      <div class="term-progress__timeline">
+        <div class="term-progress__timeline-bar" style="background: var(--timeline-color-1); width: 59.19%;"></div>
+        <div class="term-progress__timeline-bar active" style="background: var(--timeline-color-2); width: 40.81%;"></div>
+      </div>
+      <div class="term-progress__labels">
+        <div class="term-progress__label">
+          <div class="term-progress__label-color" style="background: var(--timeline-color-1);"></div>
+          <div class="term-progress__label-text">
+            Ontario's 42nd Parliament<br>07 Jun 2018 – 03 May 2022
+          </div>
+        </div>
+        <div class="term-progress__label">
+          <div class="term-progress__label-color" style="background: var(--timeline-color-2);"></div>
+          <div class="term-progress__label-text">
+            Ontario's 43rd Parliament<br>24 Jun 2022 – Present
+          </div>
+        </div>
+      </div>
+    </div>
   </header>
   
+  <!-- Tracker Content: Party Info, Filters & Promise List -->
   <div id="tracker-content">
+    <!-- Party Info Card -->
     <div class="party-info">
       <h3>Current Party in Charge: PC Party of Ontario</h3>
       <p><strong>Leader:</strong> Doug Ford</p>
       <p class="source">Source: <a href="https://www.polimeter.org/en/ford" target="_blank">Polimeter</a></p>
     </div>
-    <div class="promises">
-      <h3>2025 Provincial Election Promises</h3>
-      <div class="promises-grid">
-        <!-- Economics Promise -->
-        <div class="promise-card">
-          <h4>Economics</h4>
-          <p>Implement tax cuts and stimulate economic growth.</p>
-          <p class="status">Status: In Progress</p>
-          <p class="source">Source: <a href="https://example.com/economics" target="_blank">Government Press Release</a></p>
+    
+    <!-- Filter & Sorting Controls -->
+    <div class="filter-sort">
+      <div class="search-box">
+        <input type="text" placeholder="Search promises...">
+      </div>
+      <div class="dropdown">
+        <select>
+          <option value="last_updated">Sort by: Last Updated</option>
+          <option value="promise_id">Sort by: Promise ID</option>
+        </select>
+      </div>
+      <div class="dropdown">
+        <select>
+          <option value="none">Group by: None</option>
+          <option value="category">Group by: Category</option>
+          <option value="status">Group by: Status</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Promise List -->
+    <div class="promise-list">
+      <!-- Promise Item 1 -->
+      <div class="promise-list-item">
+        <div class="promise-list-item__status">
+          <div class="promise-list-item__status-icon kept">
+            <i class="fa fa-check-circle"></i>
+          </div>
+          <div class="promise-list-item__status-info">
+            <div>Kept</div>
+            <div>22-Jul-2024</div>
+          </div>
         </div>
-        <!-- Healthcare Promise -->
-        <div class="promise-card">
-          <h4>Healthcare</h4>
-          <p>Increase hospital funding and reduce wait times.</p>
-          <p class="status">Status: Completed</p>
-          <p class="source">Source: <a href="https://example.com/healthcare" target="_blank">Official Campaign Site</a></p>
+        <div class="promise-list-item__title">
+          <a href="/promises/2.04.002"><p>
+          2.04.002 – “[A] re-elected PC government will invest $1 billion over the next three years to boost skilled trades.”
+          </p></a>
         </div>
-        <!-- Infrastructure Promise -->
-        <div class="promise-card">
-          <h4>Infrastructure</h4>
-          <p>Improve public transit and upgrade roads.</p>
-          <p class="status">Status: Not Yet Started</p>
-          <p class="source">Source: <a href="https://example.com/infrastructure" target="_blank">Media Report</a></p>
-        </div>
-        <!-- Education Promise -->
-        <div class="promise-card">
-          <h4>Education</h4>
-          <p>Enhance education funding and reduce class sizes.</p>
-          <p class="status">Status: In Progress</p>
-          <p class="source">Source: <a href="https://example.com/education" target="_blank">Policy Brief</a></p>
+        <div class="promise-list-item__right">
+          <a href="/promises/2.04.002">Read More</a>
         </div>
       </div>
+      
+      <!-- Promise Item 2 -->
+      <div class="promise-list-item">
+        <div class="promise-list-item__status">
+          <div class="promise-list-item__status-icon in-progress">
+            <i class="fa fa-cogs"></i>
+          </div>
+          <div class="promise-list-item__status-info">
+            <div>In Progress</div>
+            <div>17-Jul-2024</div>
+          </div>
+        </div>
+        <div class="promise-list-item__title">
+          <a href="/promises/2.04.012"><p>
+          2.04.012 – “We will build highways and key infrastructure, including the Bradford Bypass.”
+          </p></a>
+        </div>
+        <div class="promise-list-item__right">
+          <a href="/promises/2.04.012">Read More</a>
+        </div>
+      </div>
+      
+      <!-- Promise Item 3 -->
+      <div class="promise-list-item">
+        <div class="promise-list-item__status">
+          <div class="promise-list-item__status-icon in-progress">
+            <i class="fa fa-cogs"></i>
+          </div>
+          <div class="promise-list-item__status-info">
+            <div>In Progress</div>
+            <div>16-Jul-2024</div>
+          </div>
+        </div>
+        <div class="promise-list-item__title">
+          <a href="/promises/2.04.017"><p>
+          2.04.017 – “Over the next decade, a re-elected PC government will expand public transit, including a new Ontario Line.”
+          </p></a>
+        </div>
+        <div class="promise-list-item__right">
+          <a href="/promises/2.04.017">Read More</a>
+        </div>
+      </div>
+      
+      <!-- Promise Item 4 -->
+      <div class="promise-list-item">
+        <div class="promise-list-item__status">
+          <div class="promise-list-item__status-icon kept">
+            <i class="fa fa-check-circle"></i>
+          </div>
+          <div class="promise-list-item__status-info">
+            <div>Kept</div>
+            <div>02-Jul-2024</div>
+          </div>
+        </div>
+        <div class="promise-list-item__title">
+          <a href="/promises/2.04.003"><p>
+          2.04.003 – “A re-elected PC government will promote apprenticeships in the skilled trades.”
+          </p></a>
+        </div>
+        <div class="promise-list-item__right">
+          <a href="/promises/2.04.003">Read More</a>
+        </div>
+      </div>
+      
     </div>
   </div>
   
